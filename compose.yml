@@ -1,4 +1,13 @@
 services:
+  frontend:
+    build:
+      context: apps/frontend
+    restart: unless-stopped
+    depends_on: []
+    volumes: [ ./apps/frontend/src:/app/src ]
+    environment:
+      PORT: 8100
+
   proxy:
     build: apps/proxy
     container_name: trade_proxy
