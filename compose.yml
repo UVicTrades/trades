@@ -25,3 +25,16 @@ services:
     depends_on: []
     environment:
       PORT: 8200
+
+  database:
+    build: apps/data/database
+    container_name: trade_database
+    restart: unless-stopped
+    depends_on: []
+    volumes:
+      - ./apps/data/database/populatedb.sql:/docker-entrypoint-initdb.d/10_populatedb.sql
+    ports: [5432:5432]
+    environment:
+      - POSTGRES_USER=trade
+      - POSTGRES_PASSWORD=trade
+      - POSTGRES_DB=trade
