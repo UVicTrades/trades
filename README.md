@@ -11,18 +11,18 @@ flowchart TD
 
     subgraph backend_rect["Backend"]
     direction LR
-        TS(Trade Service)
+        OS(Order Service)
         US(User Service)
-        SS(Stock Service)
+        MS(Market Service)
         AS(Admin Service)
     end
     P -->|HTTP /authentication/*| US
-    P -->|HTTP /engine/*| TS
-    P -->|HTTP /transaction/get*| SS
+    P -->|HTTP /engine/*| OS
+    P -->|HTTP /transaction/get*| MS
     P -->|HTTP /setup/*| AS
 
     Q@{ shape: das, label: "Order Queue" }
-    TS --> Q
+    OS --> Q
 
     subgraph algo_rect["Algorithm"]
         M(Matching Engine)
@@ -39,7 +39,7 @@ flowchart TD
     end
 
     US & AS--> DB
-    SS --> DBR
+    MS --> DBR
     M --> DB & OB
 
 
