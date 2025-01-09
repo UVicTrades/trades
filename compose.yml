@@ -1,0 +1,9 @@
+services:
+  proxy:
+    build: apps/proxy
+    container_name: trade_proxy
+    restart: unless-stopped
+    depends_on: []
+    volumes: [ ./apps/proxy:/app ]
+    environment: []
+    ports: [ 80:80, 443:443 ]
