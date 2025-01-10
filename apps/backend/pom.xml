@@ -16,6 +16,8 @@
 	<properties>
 		<java.version>21</java.version>
 		<kotlin.version>1.9.25</kotlin.version>
+		<localDbUrl>jdbc:h2:${basedir}/target/flyway/flyway-data;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH</localDbUrl>
+		<localDbUsername>sa</localDbUsername>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -39,6 +41,36 @@
 			<groupId>org.jetbrains.kotlin</groupId>
 			<artifactId>kotlin-test-junit5</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jooq</groupId>
+			<artifactId>jooq-codegen-maven</artifactId>
+			<version>3.19.11</version>
+			<!-- We use an older version of jOOQ to ensure compatibility with Postgres 12.19, -->
+			<!-- which is used by the old corplifting database. -->
+		</dependency>
+
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-database-postgresql</artifactId>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
+			<version>3.4.1</version>
 		</dependency>
 	</dependencies>
 
@@ -68,6 +100,104 @@
 						<version>${kotlin.version}</version>
 					</dependency>
 				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.flywaydb</groupId>
+				<artifactId>flyway-maven-plugin</artifactId>
+				<version>10.10.0</version>
+				<configuration>
+					<url>${localDbUrl}</url>
+					<user>${localDbUsername}</user>
+					<cleanOnValidationError>true</cleanOnValidationError>
+					<cleanDisabled>false</cleanDisabled>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>migrate</goal>
+						</goals>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>com.h2database</groupId>
+						<artifactId>h2</artifactId>
+						<version>2.2.220</version>
+					</dependency>
+					<dependency>
+						<groupId>org.flywaydb</groupId>
+						<artifactId>flyway-database-postgresql</artifactId>
+						<version>10.12.0</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+			<!-- jOOQ code generation. Note, this is below flyway, to ensure that the H2 database is populated first. -->
+			<plugin>
+				<groupId>org.jooq</groupId>
+				<artifactId>jooq-codegen-maven</artifactId>
+				<version>3.19.17</version>
+
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<jdbc>
+								<driver>org.h2.Driver</driver>
+								<url>${localDbUrl}</url>
+								<username>${localDbUsername}</username>
+							</jdbc>
+							<generator>
+								<database>
+									<name>org.jooq.meta.h2.H2Database</name>
+								</database>
+								<target>
+									<packageName>ca.uvictrades.trades.model</packageName>
+								</target>
+							</generator>
+						</configuration>
+					</execution>
+				</executions>
+
+				<dependencies>
+					<dependency>
+						<groupId>com.h2database</groupId>
+						<artifactId>h2</artifactId>
+						<version>2.2.220</version>
+					</dependency>
+				</dependencies>
+
+				<configuration>
+					<generator>
+						<!-- The older version of jOOQ that we're using has errors in generated -->
+						<!-- Kotlin code. When we upgrade, this line can be uncommented to switch to Kotlin -->
+						<name>org.jooq.codegen.KotlinGenerator</name>
+						<generate>
+							<deprecated>false</deprecated>
+						</generate>
+					</generator>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>3.4.0</version>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${project.build.directory}/generated-sources/jooq</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

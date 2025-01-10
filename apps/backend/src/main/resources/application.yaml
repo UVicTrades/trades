@@ -3,3 +3,8 @@ spring:
     name: trades
 server:
   port: ${PORT:8080}
+uvictrades:
+  db:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/trade}
+    username: ${DB_USERNAME:trade}
+    password: ${DB_PASSWORD:trade}
