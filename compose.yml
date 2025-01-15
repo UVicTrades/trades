@@ -5,17 +5,18 @@ services:
     restart: unless-stopped
     depends_on: []
     volumes: [ ./apps/frontend/src:/app/src ]
+    ports: [ 8100:8100 ]
     environment:
       PORT: 8100
 
-  proxy:
-    build: apps/proxy
-    container_name: trade_proxy
-    restart: unless-stopped
-    depends_on: []
-    volumes: [ ./apps/proxy:/app ]
-    environment: []
-    ports: [ 80:80, 443:443 ]
+  # proxy:
+  #   build: apps/proxy
+  #   container_name: trade_proxy
+  #   restart: unless-stopped
+  #   depends_on: []
+  #   volumes: [ ./apps/proxy:/app ]
+  #   environment: []
+  #   ports: [ 80:80, 443:443 ]
 
   backend:
     build:
@@ -23,6 +24,7 @@ services:
     container_name: trade_backend
     restart: unless-stopped
     depends_on: []
+    ports: [ 8200:8200 ]
     environment:
       PORT: 8200
       DB_URL: jdbc:postgresql://database:5432/trade
