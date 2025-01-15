@@ -1,0 +1,15 @@
+meta {
+  name: getStockTransactions
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/transaction/getStockTransactions
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

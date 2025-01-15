@@ -1,0 +1,19 @@
+meta {
+  name: addStockToUser
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/setup/addStockToUser
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {}
+}

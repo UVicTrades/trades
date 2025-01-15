@@ -1,0 +1,19 @@
+meta {
+  name: cancelStockTransaction
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/engine/cancelStockTransaction
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {}
+}
