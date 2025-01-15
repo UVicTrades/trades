@@ -1,0 +1,21 @@
+http:
+  routers:
+    to-frontend:
+      entryPoints: [web, websecure]
+      rule: "PathPrefix(`/`)"
+      service: frontend
+      priority: 100
+    to-backend:
+      rule: "PathPrefix(`/setup`) || PathPrefix(`/engine`) || PathPrefix(`/transaction`) || PathPrefix(`/authentication`)"
+      service: backend
+      priority: 200
+
+  services:
+    frontend:
+      loadBalancer:
+        servers:
+          - url: http://frontend:8100/
+    backend:
+      loadBalancer:
+        servers:
+          - url: http://backend:8200/
