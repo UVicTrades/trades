@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# UVic Trades
 
-## Getting Started
+## Local Development
 
-First, run the development server:
+> [!NOTE]
+> **BEFORE** you run the following steps make sure you have [`docker`](https://docs.docker.com/engine/install/) & the [`docker compose`](https://docs.docker.com/compose/install/#scenario-two-install-the-compose-plugin) plugin installed and running
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```shell
+# Clone the repository
+git clone https://github.com/UVicTrades/trades && cd trades
+
+# Run the docker compose stack with hot reloading
+docker compose up --build --wait
+
+# View all container logs
+docker compose logs -f
+
+# When you want to shut it down
+docker compose down -v
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The development environment is now running (give it ~1min to spin up) and accessible at [http://localhost/](http://localhost/)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## System Architecture
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```mermaid
+flowchart TD
+    subgraph frontend_rect["Frontend"]
+        CB[Client Browser]
+    end
 
-## Learn More
+    P{{Proxy}}
+    CB -->|HTTP /| P
 
-To learn more about Next.js, take a look at the following resources:
+    subgraph backend_rect["Backend"]
+    direction LR
+        OS(Order Service)
+        US(User Service)
+        MS(Market Service)
+        AS(Admin Service)
+    end
+    P -->|HTTP /authentication/*| US
+    P -->|HTTP /engine/*| OS
+    P -->|HTTP /transaction/get*| MS
+    P -->|HTTP /setup/*| AS
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+    Q@{ shape: das, label: "Order Queue" }
+    OS --> Q
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+    subgraph algo_rect["Algorithm"]
+        M(Matching Engine)
+    end
 
-## Deploy on Vercel
+    Q --> M
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+    subgraph db_rect["Database"]
+    direction LR
+        C[(Cache)]
+        OB[(Orderbook)]
+        DB[(Primary)]
+        DBR[(Read Replica)]
+    end
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+    US & AS--> DB
+    MS --> DBR
+    M --> DB & OB
+
+
+    style db_rect       stroke:#e91e63,stroke-width:3px,fill:none,stroke-dasharray:4,4
+    style backend_rect  stroke:#9b59b6,stroke-width:3px,fill:none,stroke-dasharray:4,4
+    style algo_rect     stroke:#2ecc71,stroke-width:3px,fill:none,stroke-dasharray:4,4
+    style frontend_rect stroke:#3498db,stroke-width:3px,fill:none,stroke-dasharray:4,4
+```

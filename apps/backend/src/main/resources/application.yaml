@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: trades
+server:
+  port: ${PORT:8080}
+uvictrades:
+  security:
+    expiration-seconds: ${TOKEN_EXPIRATION_SECONDS:86400}
+    secret: ${SECRET_KEY:some-secret-key-this-is-quite-long-at-least-256-bytes-crazy}
+  db:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/trade}
+    username: ${DB_USERNAME:trade}
+    password: ${DB_PASSWORD:trade}
