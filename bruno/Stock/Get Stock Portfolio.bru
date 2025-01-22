@@ -1,0 +1,29 @@
+meta {
+  name: Get Stock Portfolio
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/transaction/getStockPortfolio
+  body: none
+  auth: none
+}
+
+docs {
+  ### Response
+  
+  ```json
+  {
+    "success": true,
+    "data":
+    [
+        {
+            "stock_id": "string",
+            "stock_name": "string",
+            "quantity_owned": 3
+        }
+    ]
+  }
+  ```
+}

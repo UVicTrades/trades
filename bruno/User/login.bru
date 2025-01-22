@@ -1,5 +1,5 @@
 meta {
-  name: login
+  name: Login
   type: http
   seq: 1
 }
@@ -12,7 +12,37 @@ post {
 
 body:json {
   {
-    "user_name": "jatt",
+    "user_name": "matt",
     "password": "cats"
   }
+}
+
+script:post-response {
+  bru.setVar("token", res.body.data.token)
+}
+
+docs {
+  ### Responses
+  
+  Success
+  
+  ```
+  {
+    "success": true,
+    "data": {
+      "token": <string>
+    }
+  }
+  ```
+  
+  Failure
+  
+  ```
+  {
+    "success": false,
+    "data": {
+      "error": <errorMessage>
+    }
+  }
+  ```
 }

@@ -1,0 +1,28 @@
+meta {
+  name: Cancel Stock Transaction
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/engine/cancelStockTransaction
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "stock_tx_id": "{{stock_tx_id}}"
+  }
+}
+
+docs {
+  ### Response
+  
+  ```json
+  {
+    "success":true,
+    "data":null
+  }
+  ```
+}

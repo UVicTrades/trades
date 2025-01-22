@@ -1,0 +1,33 @@
+meta {
+  name: Add Stock to User
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/setup/addStockToUser
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "stock_id": "{{stockId}}",
+    "quantity": 100
+  }
+}
+
+docs {
+  ### Response
+  
+  ```json
+  {
+    "success": true,
+    "data": null
+  }
+  ```
+}

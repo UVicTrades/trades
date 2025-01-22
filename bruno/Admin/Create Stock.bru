@@ -1,0 +1,34 @@
+meta {
+  name: Create Stock
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/setup/createStock
+  body: json
+  auth: none
+}
+
+headers {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "stock_name": "Google"
+  }
+}
+
+docs {
+  ### Response
+  
+  ```
+  {
+    "success": true,
+    "data": {
+      "stock_id": <string>
+    }
+  }
+  ```
+}

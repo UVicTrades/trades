@@ -1,11 +1,11 @@
 meta {
-  name: Get Stock Prices
+  name: Get Stock Transactions
   type: http
-  seq: 1
+  seq: 5
 }
 
 get {
-  url: {{baseUrl}}/transaction/getStockPrices
+  url: {{baseUrl}}/transaction/getStockTransactions
   body: none
   auth: none
 }
@@ -16,11 +16,12 @@ docs {
   ```json
   {
     "success": true,
-    "data": [
+    "data":
+    [
       {
+        "stock_tx_id": "string",
         "stock_id": "string",
-        "stock_name": "string",
-        "current_price": 23.345
+        "order_status": "string"
       }
     ]
   }

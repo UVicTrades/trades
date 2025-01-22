@@ -1,0 +1,28 @@
+meta {
+  name: Get Wallet Transactions
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/transaction/getWalletTransactions
+  body: none
+  auth: none
+}
+
+docs {
+  ### Response
+  
+  ```json
+  {
+    "success": true,
+    "data": [
+      {
+        "wallet_tx_id": "string",
+        "amount": 12.34,
+        "time_stamp": "string"
+      }
+    ]
+  }
+  ```
+}

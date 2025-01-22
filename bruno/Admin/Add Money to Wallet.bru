@@ -1,20 +1,18 @@
 meta {
-  name: Register
+  name: Add Money to Wallet
   type: http
-  seq: 2
+  seq: 1
 }
 
 post {
-  url: {{baseUrl}}/authentication/register
+  url: {{baseUrl}}/transaction/addMoneyToWallet
   body: json
   auth: none
 }
 
 body:json {
   {
-    "user_name": "matt",
-    "password": "password",
-    "name": "Matt Lebl"
+    "amount": 100
   }
 }
 
@@ -22,7 +20,7 @@ docs {
   ### Responses
   
   Success
-  ```
+  ```json
   {
     "success": true,
     "data": null
@@ -30,11 +28,11 @@ docs {
   ```
   
   Failure
-  ```
+  ```json
   {
     "success": false,
     "data": {
-      "error": <errorMessage>
+      "error": "errormsg"
     }
   }
   ```

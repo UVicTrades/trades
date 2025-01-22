@@ -1,5 +1,5 @@
 meta {
-  name: getWalletBalance
+  name: Get Wallet Balance
   type: http
   seq: 3
 }
@@ -12,4 +12,17 @@ get {
 
 auth:bearer {
   token: {{token}}
+}
+
+docs {
+  ### Response
+  
+  ```json
+  {
+    "success": true,
+    "data": {
+      "balance": 1.23
+    }
+  }
+  ```
 }
