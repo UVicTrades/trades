@@ -1,5 +1,6 @@
 package ca.uvictrades.trades.controller.responses
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.math.BigDecimal
 import java.time.OffsetDateTime
 
@@ -8,6 +9,7 @@ data class StockTransactionResponse (
     val stock_id: String,
     val wallet_tx_id: String,
     val order_status: OrderStatus,
+    @get:JsonProperty("is_buy")
     val is_buy: Boolean,
     val order_type: OrderType,
     val stock_price: BigDecimal,
