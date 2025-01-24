@@ -29,7 +29,7 @@ services:
       PORT: 8200
       DB_URL: jdbc:postgresql://database:5432/trade
       DB_USERNAME: trade
-      DB_PASSWORDE: trade
+      DB_PASSWORD: trade
 
   database:
     build: apps/data/database
