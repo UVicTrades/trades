@@ -4,18 +4,16 @@ create table trader
         constraint users_pk
             primary key,
     password text not null,
-    name     text not null,
-    created_at timestamp default current_timestamp
+    name     text not null
 );
 
 create table wallet
 (
     wallet_id serial not null
-        contraint wallet_pk
+        constraint wallet_pk
             primary key,
     username text references trader(username) not null,
-    balance decimal(10, 2) default 0 not null,
-    modified_at timestamp default current_timestamp
+    balance decimal(10, 2) default 0 not null
 );
 
 create table wallet_tx
@@ -25,18 +23,27 @@ create table wallet_tx
             primary key,
     wallet_id serial references wallet(wallet_id) not null,
     is_debit boolean not null,
-    amount decimal(10, 2) not null
-)
+    amount decimal(10, 2) not null,
+    time_stamp timestamp default current_timestamp
+);
+
+create table stock
+(
+    stock_id serial not null
+        constraint stock_pk
+            primary key,
+    stock_name text not null,
+    current_price decimal(10, 2) default 0 not null
+);
 
 create table stock_tx
 (
-    stock_tx_id serial not null
-        contraint stock_tx_pk
+    id serial not null
+        constraint stock_tx_pk
             primary key,
-    stock_id not null, -- stocks are stored in memory, no reference in db
+    stock_id serial references stock(stock_id) not null,
     is_debit boolean not null,
     amount decimal(10, 2) not null,
     time_stamp timestamp default current_timestamp
-
-)
+);
 
