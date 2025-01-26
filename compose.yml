@@ -32,7 +32,7 @@ services:
       DB_PASSWORD: trade
 
   database:
-    build: apps/data/database
+    image: timescale/timescaledb-ha:pg17
     container_name: trade_database
     restart: unless-stopped
     depends_on: []
