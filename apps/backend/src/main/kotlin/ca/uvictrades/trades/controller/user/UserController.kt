@@ -8,13 +8,17 @@ import ca.uvictrades.trades.controller.user.responses.LoginUserResponse
 import ca.uvictrades.trades.controller.user.responses.RegisterUserResponse
 import ca.uvictrades.trades.model.public.tables.records.TraderRecord
 import ca.uvictrades.trades.service.TraderService
+import ca.uvictrades.trades.model.public.tables.records.WalletRecord
+import ca.uvictrades.trades.service.WalletService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
+import java.math.BigDecimal
 
 @RestController
 class UserController(
+    private val walletService: WalletService,
     private val traderService: TraderService,
     private val jwtGenerator: JwtGenerator,
 ) {
@@ -26,6 +30,7 @@ class UserController(
             request.password,
             request.name,
         )
+        walletService.addNewWallet(request.user_name, BigDecimal.ZERO )
 
         return RegisterUserResponse()
     }
