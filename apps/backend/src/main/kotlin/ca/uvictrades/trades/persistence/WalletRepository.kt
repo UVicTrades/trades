@@ -10,18 +10,22 @@ import java.math.BigDecimal
 class WalletRepository(
     private val create: DSLContext,
 ) {
+
+    fun getWalletByWalletId(walletId: Int): WalletRecord? =
+        create.selectFrom(WALLET)
+            .where(WALLET.WALLET_ID.eq(walletId))
+            .fetchOne()
+
     fun getWalletByUsername(username: String): WalletRecord? =
         create.selectFrom(WALLET)
             .where(WALLET.USERNAME.eq(username))
             .fetchOne()
 
     fun createWallet(
-        walletId: Int,
         username: String,
         balance: BigDecimal,
     ): WalletRecord {
         val record = create.newRecord(WALLET).also {
-            it.wallet_id = wallet_id
             it.username = username
             it.balance = balance
         }
