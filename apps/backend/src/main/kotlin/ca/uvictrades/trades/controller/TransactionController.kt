@@ -1,7 +1,11 @@
 package ca.uvictrades.trades.controller
 
+
+import ca.uvictrades.trades.configuration.JwtVerifier
 import ca.uvictrades.trades.controller.responses.*
+import ca.uvictrades.trades.service.WalletService
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.math.BigDecimal
@@ -9,7 +13,10 @@ import java.time.OffsetDateTime
 
 @RestController
 @RequestMapping("/transaction")
-class TransactionController {
+class TransactionController (
+    private val walletService: WalletService,
+    private val jwtVerifier: JwtVerifier,
+) {
 
     @GetMapping("/getStockPrices")
     fun getStockPrices(): StockPricesResponse {
@@ -48,10 +55,33 @@ class TransactionController {
     }
 
     @GetMapping("/getWalletBalance")
-    fun getWalletBalance(): WalletBalanceResponse {
+    fun getWalletBalance(@RequestHeader("Authorization") authHeader: String): WalletBalanceResponse {
+        //Note: Bruno currently passes token as auth bearer token while project spec specifies passing as a header value with name=token
+        var success: Boolean
+        var dataPayload: WalletBalanceResponse.WalletBalance?
+
+        try {
+            val token = authHeader.removePrefix("Bearer ").trim()
+
+            val username = jwtVerifier.verify(token)
+
+            val balance = walletService.getWalletBalanceByUserName(username)?.balance
+            success = true
+            dataPayload = WalletBalanceResponse.WalletBalance(balance)
+
+
+        } catch (e: Exception) {
+            println("Error fetching wallet balance: ${e.message}")
+            success = false
+            dataPayload = null
+        }
+
         return WalletBalanceResponse(
-            data = WalletBalanceResponse.WalletBalance(BigDecimal(100))
+            success = success,
+            data = dataPayload
         )
+
+
     }
 
     @GetMapping("/getWalletTransactions")

@@ -20,4 +20,8 @@ class WalletService(
 
     }
 
+    fun getWalletBalanceByUserName(username: String): WalletRecord? {
+        return walletRepo.getWalletByUsername(username)
+    }
+
 }
