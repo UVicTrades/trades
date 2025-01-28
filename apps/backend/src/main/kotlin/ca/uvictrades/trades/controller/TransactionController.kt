@@ -85,17 +85,29 @@ class TransactionController (
     }
 
     @GetMapping("/getWalletTransactions")
-    fun getWalletTransactions(): WalletTransactionsResponse {
+    fun getWalletTransactions(@RequestHeader("Authorization") authHeader: String): WalletTransactionsResponse {
+        //Note: Bruno currently passes token as auth bearer token while project spec specifies passing as a header value with name=token
+        var success: Boolean
+        var walletTransactions: List<WalletTransactionResponse>?
+
+        try {
+            val token = authHeader.removePrefix("Bearer ").trim()
+
+            val username = jwtVerifier.verify(token)
+
+            walletTransactions = walletService.getWalletTransactions(username)
+            success = true
+
+
+        } catch (e: Exception) {
+            println("Error fetching wallet balance: ${e.message}")
+            success = false
+            walletTransactions = null
+        }
+
         return WalletTransactionsResponse(
-            data = listOf(
-                WalletTransactionResponse(
-                    wallet_tx_id = "628ba23df2210df6c3764823",
-                    stock_tx_id = "62738363a50350b1fbb243a6",
-                    is_debit = true,
-                    amount = BigDecimal(100),
-                    time_stamp = OffsetDateTime.parse("2024-01-12T15:03:25.019+00:00"),
-                ),
-            )
+            success = success,
+            data = walletTransactions
         )
     }
 

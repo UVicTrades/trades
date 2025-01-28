@@ -2,6 +2,8 @@ package ca.uvictrades.trades.persistence
 
 import ca.uvictrades.trades.model.public.tables.Wallet.Companion.WALLET
 import ca.uvictrades.trades.model.public.tables.records.WalletRecord
+import ca.uvictrades.trades.model.public.tables.WalletTx.Companion.WALLET_TX
+import ca.uvictrades.trades.model.public.tables.records.WalletTxRecord
 import org.jooq.DSLContext
 import org.springframework.stereotype.Repository
 import java.math.BigDecimal
@@ -33,6 +35,13 @@ class WalletRepository(
         record.store()
 
         return record
+    }
+
+    fun getTransactionsByUsername(username: String): List<WalletTxRecord> {
+        return create.select(WALLET_TX)
+            .where(WALLET.USERNAME.eq(username))
+            .fetch() //type of each entry is a Result<Record>
+            .map{ it.into(WalletTxRecord::class.java)} //map into a WalletTxRecord
     }
 
 }

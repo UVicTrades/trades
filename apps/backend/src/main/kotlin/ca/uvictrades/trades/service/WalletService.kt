@@ -1,7 +1,9 @@
 package ca.uvictrades.trades.service
 
+import ca.uvictrades.trades.controller.responses.WalletTransactionResponse
 import ca.uvictrades.trades.model.public.tables.records.WalletRecord
 import ca.uvictrades.trades.persistence.WalletRepository
+import ca.uvictrades.trades.model.public.tables.records.WalletTxRecord
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
@@ -24,4 +26,8 @@ class WalletService(
         return walletRepo.getWalletByUsername(username)
     }
 
+    fun getWalletTransactions(username: String): List<WalletTransactionResponse> {
+        return walletRepo.getTransactionsByUsername(username)
+            .map { it.into(WalletTransactionResponse::class.java) }
+    }
 }
