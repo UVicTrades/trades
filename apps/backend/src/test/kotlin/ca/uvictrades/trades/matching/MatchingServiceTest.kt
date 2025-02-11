@@ -326,4 +326,44 @@ class MatchingServiceTest {
 		assertEquals(0, residualQuantities["one"])
 		assertEquals(3, residualQuantities["two"])
 	}
+
+	@Test
+	fun `successful buy returns residual liquidity`() {
+		val time = Instant.now()
+
+		val sellOne = SellLimitOrder(
+			id = "one",
+			stock = "acme",
+			quantity = 1,
+			pricePerUnit = BigDecimal(100.0),
+			timestamp = time
+		)
+
+		val sellTwo = SellLimitOrder(
+			id = "two",
+			stock = "acme",
+			quantity = 4,
+			pricePerUnit = BigDecimal(120.0),
+			timestamp = time.plusSeconds(1),
+		)
+
+		matchingService.place(sellOne)
+		matchingService.place(sellTwo)
+
+		val buy = BuyMarketOrder(
+			"acme",
+			quantity = 2,
+			liquidity = BigDecimal(9000.0),
+		)
+
+		// fulfilling this will require 1@100 and 1@120 = 220
+		// 9000 - 220 = 8780
+
+		val result = matchingService.place(buy)
+
+		require(result is PlaceBuyOrderResult.Success)
+
+		assertEquals(BigDecimal(8780), result.residualLiquidity)
+	}
+
 }

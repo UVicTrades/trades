@@ -68,7 +68,7 @@ class MatchingService {
 			residues.add(residue)
 		}
 
-		return PlaceBuyOrderResult.Success(residues)
+		return PlaceBuyOrderResult.Success(residues, remainingLiquidity)
 	}
 
 }
