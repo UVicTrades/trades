@@ -66,7 +66,7 @@ class MatchingServiceTest {
 
 		require(result is PlaceBuyOrderResult.Success)
 
-		Assertions.assertEquals(sellOrder.id, result.matchedSellOrderId)
+		Assertions.assertEquals(sellOrder.id, result.sellOrderResidues.first().id)
 	}
 
 	@Test
@@ -110,7 +110,7 @@ class MatchingServiceTest {
 
 		require(result is PlaceBuyOrderResult.Success)
 
-		assertEquals("some-specific-id", result.matchedSellOrderId)
+		assertEquals("some-specific-id", result.sellOrderResidues.first().id)
 	}
 
 	@Test
@@ -143,7 +143,7 @@ class MatchingServiceTest {
 
 		require(result is PlaceBuyOrderResult.Success)
 
-		assertEquals(lowSellOrder.id, result.matchedSellOrderId)
+		assertEquals(lowSellOrder.id, result.sellOrderResidues.first().id)
 	}
 
 	@Test
@@ -187,4 +187,34 @@ class MatchingServiceTest {
 
 		assert(result is PlaceBuyOrderResult.Failure)
 	}
+
+	@Test
+	fun `multiple sells can fulfull a single buy`() {
+		val sellOrderOne = SellLimitOrder(
+			id = "one",
+			stock = "aapl",
+			quantity = 1,
+			pricePerUnit = BigDecimal(100.0),
+		)
+
+		val sellOrderTwo = SellLimitOrder(
+			id = "two",
+			stock = "aapl",
+			quantity = 1,
+			pricePerUnit = BigDecimal(100.0),
+		)
+
+		val buyOrder = BuyMarketOrder(
+			stock = "aapl",
+			quantity = 2,
+			liquidity = BigDecimal(9000.0),
+		)
+
+		matchingService.place(sellOrderOne)
+		matchingService.place(sellOrderTwo)
+		val result = matchingService.place(buyOrder)
+
+		require(result is PlaceBuyOrderResult.Success)
+	}
+
 }

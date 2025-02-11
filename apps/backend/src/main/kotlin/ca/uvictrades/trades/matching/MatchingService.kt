@@ -6,6 +6,7 @@ import ca.uvictrades.trades.matching.port.SellLimitOrder
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 import java.util.*
+import kotlin.math.min
 
 @Component
 class MatchingService {
@@ -35,22 +36,37 @@ class MatchingService {
 
 	fun place(order: BuyMarketOrder): PlaceBuyOrderResult {
 
-		val match = getSellOrdersForStock(order.stock).firstOrNull()
+		var remainingUnits = order.quantity
+		var remainingLiquidity = order.liquidity
 
-		return if (match != null) {
-			if (order.liquidity < BigDecimal(order.quantity) * match.pricePerUnit) {
-				PlaceBuyOrderResult.Failure
-			} else {
+		val residues: MutableList<SellLimitOrder> = mutableListOf()
 
-				if (match.quantity < order.quantity) {
-					PlaceBuyOrderResult.Failure
-				} else {
-					PlaceBuyOrderResult.Success(match.id)
-				}
+		while (remainingUnits > 0) {
+			val matchedOrder: SellLimitOrder = getSellOrdersForStock(order.stock).poll()
+				?: // No more sell orders remain.
+				return PlaceBuyOrderResult.Failure
+
+			val matchedQuantity = min(matchedOrder.quantity, remainingUnits)
+			remainingUnits -= matchedQuantity
+			val matchedPrice = BigDecimal(matchedQuantity) * matchedOrder.pricePerUnit
+
+			remainingLiquidity -= matchedPrice
+
+			if (remainingLiquidity < BigDecimal.ZERO) {
+				return PlaceBuyOrderResult.Failure
 			}
-		} else {
-			PlaceBuyOrderResult.Failure
+
+			val residue = SellLimitOrder(
+				matchedOrder.id,
+				matchedOrder.stock,
+				remainingUnits,
+				matchedOrder.pricePerUnit,
+			)
+
+			residues.add(residue)
 		}
+
+		return PlaceBuyOrderResult.Success(residues)
 	}
 
 }
