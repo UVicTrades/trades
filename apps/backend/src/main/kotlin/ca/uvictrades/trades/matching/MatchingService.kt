@@ -5,6 +5,7 @@ import ca.uvictrades.trades.matching.port.PlaceBuyOrderResult
 import ca.uvictrades.trades.matching.port.SellLimitOrder
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
+import java.time.Instant
 import java.util.*
 import kotlin.math.min
 
@@ -31,7 +32,7 @@ class MatchingService {
 		}
 
 	private fun createNewStockQueue(): PriorityQueue<SellLimitOrder> {
-		return PriorityQueue(compareBy(SellLimitOrder::pricePerUnit))
+		return PriorityQueue(compareBy(SellLimitOrder::pricePerUnit, SellLimitOrder::timestamp))
 	}
 
 	fun place(order: BuyMarketOrder): PlaceBuyOrderResult {
@@ -61,6 +62,7 @@ class MatchingService {
 				matchedOrder.stock,
 				remainingUnits,
 				matchedOrder.pricePerUnit,
+				Instant.now(),
 			)
 
 			residues.add(residue)

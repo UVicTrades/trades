@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
+import java.time.Instant
 import kotlin.test.assertEquals
 
 class MatchingServiceTest {
@@ -25,6 +26,7 @@ class MatchingServiceTest {
 			stock = "aapl",
 			quantity = 3,
 			pricePerUnit = BigDecimal(100.0),
+			timestamp = Instant.now(),
 		)
 
 		matchingService.place(order)
@@ -53,6 +55,7 @@ class MatchingServiceTest {
 			stock = "aapl",
 			quantity = 3,
 			pricePerUnit = BigDecimal(100.0),
+			timestamp = Instant.now(),
 		)
 
 		val buyOrder = BuyMarketOrder(
@@ -76,6 +79,7 @@ class MatchingServiceTest {
 			stock = "aapl",
 			quantity = 3,
 			pricePerUnit = BigDecimal(100.0),
+			timestamp = Instant.now(),
 		)
 
 		val buyOrder = BuyMarketOrder(
@@ -97,6 +101,7 @@ class MatchingServiceTest {
 			stock = "aapl",
 			quantity = 3,
 			pricePerUnit = BigDecimal(100.0),
+			timestamp = Instant.now(),
 		)
 
 		val buyOrder = BuyMarketOrder(
@@ -120,6 +125,7 @@ class MatchingServiceTest {
 			stock = "aapl",
 			quantity = 3,
 			pricePerUnit = BigDecimal(100.0),
+			timestamp = Instant.now(),
 		)
 
 		val highSellOrder = SellLimitOrder(
@@ -127,6 +133,7 @@ class MatchingServiceTest {
 			stock = "aapl",
 			quantity = 3,
 			pricePerUnit = BigDecimal(200.0),
+			timestamp = Instant.now(),
 		)
 
 		val buyOrder = BuyMarketOrder(
@@ -153,6 +160,7 @@ class MatchingServiceTest {
 			stock = "aapl",
 			quantity = 1,
 			pricePerUnit = BigDecimal(100.0),
+			timestamp = Instant.now(),
 		)
 
 		val buyOrder = BuyMarketOrder(
@@ -174,6 +182,7 @@ class MatchingServiceTest {
 			stock = "aapl",
 			quantity = 1,
 			pricePerUnit = BigDecimal(100.0),
+			timestamp = Instant.now(),
 		)
 
 		val buyOrder = BuyMarketOrder(
@@ -195,6 +204,7 @@ class MatchingServiceTest {
 			stock = "aapl",
 			quantity = 1,
 			pricePerUnit = BigDecimal(100.0),
+			timestamp = Instant.now(),
 		)
 
 		val sellOrderTwo = SellLimitOrder(
@@ -202,6 +212,7 @@ class MatchingServiceTest {
 			stock = "aapl",
 			quantity = 1,
 			pricePerUnit = BigDecimal(100.0),
+			timestamp = Instant.now(),
 		)
 
 		val buyOrder = BuyMarketOrder(
@@ -217,4 +228,59 @@ class MatchingServiceTest {
 		require(result is PlaceBuyOrderResult.Success)
 	}
 
+	@Test
+	fun `the most recent sell order breaks any price tie`() {
+		val orderOne = SellLimitOrder(
+			id = "one",
+			stock = "acme",
+			quantity = 1,
+			pricePerUnit = BigDecimal(20),
+			timestamp = Instant.parse("2024-02-10T15:30:00Z")
+		)
+
+		val orderTwo = SellLimitOrder(
+			id = "two",
+			stock = "acme",
+			quantity = 1,
+			pricePerUnit = BigDecimal(20),
+			timestamp = Instant.parse("2024-02-10T16:00:00Z")
+		)
+
+		val orderThree = SellLimitOrder(
+			id = "three",
+			stock = "acme",
+			quantity = 1,
+			pricePerUnit = BigDecimal(20),
+			timestamp = Instant.parse("2024-02-10T16:30:00Z")
+		)
+
+		val orderFour = SellLimitOrder(
+			id = "four",
+			stock = "acme",
+			quantity = 1,
+			pricePerUnit = BigDecimal(20),
+			timestamp = Instant.parse("2024-02-10T17:00:00Z")
+		)
+
+		matchingService.place(orderTwo)
+		matchingService.place(orderThree)
+		matchingService.place(orderOne)
+		matchingService.place(orderFour)
+
+		val buy = BuyMarketOrder(
+			"acme",
+			quantity = 1,
+			liquidity = BigDecimal(9000.0),
+		)
+
+		val result = matchingService.place(buy)
+
+		require(result is PlaceBuyOrderResult.Success)
+
+		assertEquals("one", result.sellOrderResidues.first().id)
+
+		assertEquals(1, result.sellOrderResidues.size)
+
+		assertEquals(0, result.sellOrderResidues.first().quantity)
+	}
 }
