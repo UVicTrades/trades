@@ -60,7 +60,7 @@ class MatchingService {
 			val residue = SellLimitOrder(
 				matchedOrder.id,
 				matchedOrder.stock,
-				remainingUnits,
+				matchedOrder.quantity - matchedQuantity,
 				matchedOrder.pricePerUnit,
 				Instant.now(),
 			)

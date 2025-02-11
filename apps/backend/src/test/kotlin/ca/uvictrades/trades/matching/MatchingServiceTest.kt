@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.Instant
+import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
 class MatchingServiceTest {
@@ -282,5 +283,47 @@ class MatchingServiceTest {
 		assertEquals(1, result.sellOrderResidues.size)
 
 		assertEquals(0, result.sellOrderResidues.first().quantity)
+	}
+
+	@Test
+	fun `multiple sells fulfilling one buy return correct residues`() {
+
+		val time = Instant.now()
+
+		val sellOne = SellLimitOrder(
+			id = "one",
+			stock = "acme",
+			quantity = 1,
+			pricePerUnit = BigDecimal(100.0),
+			timestamp = time
+		)
+
+		val sellTwo = SellLimitOrder(
+			id = "two",
+			stock = "acme",
+			quantity = 4,
+			pricePerUnit = BigDecimal(100.0),
+			timestamp = time.plusSeconds(1),
+		)
+
+		matchingService.place(sellOne)
+		matchingService.place(sellTwo)
+
+		val buy = BuyMarketOrder(
+			stock = "acme",
+			quantity = 2,
+			liquidity = BigDecimal(9000.0),
+		)
+
+		val result = matchingService.place(buy)
+
+		require(result is PlaceBuyOrderResult.Success)
+
+		val residualQuantities = result.sellOrderResidues.associate {
+			it.id to it.quantity
+		}
+
+		assertEquals(0, residualQuantities["one"])
+		assertEquals(3, residualQuantities["two"])
 	}
 }
