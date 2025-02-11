@@ -4,11 +4,14 @@ import ca.uvictrades.trades.matching.port.BuyMarketOrder
 import ca.uvictrades.trades.matching.port.PlaceBuyOrderResult
 import ca.uvictrades.trades.matching.port.SellLimitOrder
 import org.springframework.stereotype.Component
+import java.math.BigDecimal
+import java.util.PriorityQueue
+import kotlin.time.times
 
 @Component
 class MatchingService {
 
-	private val sellOrders: MutableList<SellLimitOrder> = mutableListOf()
+	private val sellOrders = PriorityQueue(compareBy(SellLimitOrder::pricePerUnit))
 
 	fun place(order: SellLimitOrder) {
 		sellOrders.add(order)
@@ -20,7 +23,16 @@ class MatchingService {
 		}
 
 		return if (match != null) {
-			PlaceBuyOrderResult.Success(match.id)
+			if (order.liquidity < BigDecimal(order.quantity) * match.pricePerUnit) {
+				PlaceBuyOrderResult.Failure
+			} else {
+
+				if (match.quantity < order.quantity) {
+					PlaceBuyOrderResult.Failure
+				} else {
+					PlaceBuyOrderResult.Success(match.id)
+				}
+			}
 		} else {
 			PlaceBuyOrderResult.Failure
 		}

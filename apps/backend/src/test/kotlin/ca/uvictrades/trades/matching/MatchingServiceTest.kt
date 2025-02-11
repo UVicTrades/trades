@@ -113,4 +113,78 @@ class MatchingServiceTest {
 		assertEquals("some-specific-id", result.matchedSellOrderId)
 	}
 
+	@Test
+	fun `lower priced sell orders matched with priority`() {
+		val lowSellOrder = SellLimitOrder(
+			id = "low",
+			stock = "aapl",
+			quantity = 3,
+			pricePerUnit = BigDecimal(100.0),
+		)
+
+		val highSellOrder = SellLimitOrder(
+			id = "high",
+			stock = "aapl",
+			quantity = 3,
+			pricePerUnit = BigDecimal(200.0),
+		)
+
+		val buyOrder = BuyMarketOrder(
+			stock = "aapl",
+			quantity = 3,
+			liquidity = BigDecimal(9000.0),
+		)
+
+		matchingService.place(highSellOrder)
+		matchingService.place(lowSellOrder)
+		matchingService.place(highSellOrder)
+
+		val result = matchingService.place(buyOrder)
+
+		require(result is PlaceBuyOrderResult.Success)
+
+		assertEquals(lowSellOrder.id, result.matchedSellOrderId)
+	}
+
+	@Test
+	fun `buy order fails with insufficient liquidity`() {
+		val sellOrder = SellLimitOrder(
+			id = "id",
+			stock = "aapl",
+			quantity = 1,
+			pricePerUnit = BigDecimal(100.0),
+		)
+
+		val buyOrder = BuyMarketOrder(
+			stock = "aapl",
+			quantity = 1,
+			liquidity = BigDecimal(90.0),
+		)
+
+		matchingService.place(sellOrder)
+		val result = matchingService.place(buyOrder)
+
+		assert(result is PlaceBuyOrderResult.Failure)
+	}
+
+	@Test
+	fun `sell orders with insufficient quantity cannot be matched`() {
+		val sellOrder = SellLimitOrder(
+			id = "id",
+			stock = "aapl",
+			quantity = 1,
+			pricePerUnit = BigDecimal(100.0),
+		)
+
+		val buyOrder = BuyMarketOrder(
+			stock = "aapl",
+			2,
+			liquidity = BigDecimal(9000.0),
+		)
+
+		matchingService.place(sellOrder)
+		val result = matchingService.place(buyOrder)
+
+		assert(result is PlaceBuyOrderResult.Failure)
+	}
 }
