@@ -4,11 +4,13 @@ import ca.uvictrades.trades.model.public.tables.records.TraderRecord
 import ca.uvictrades.trades.persistence.TraderRepository
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
+import java.math.BigDecimal
 
 @Component
 class TraderService(
     private val traderRepo: TraderRepository,
     private val passwordEncoder: PasswordEncoder,
+    private val walletService: WalletService,
 ) {
 
     fun registerNewTrader(
@@ -18,7 +20,10 @@ class TraderService(
     ): TraderRecord {
 
         val encodedPassword = passwordEncoder.encode(password)
-        return traderRepo.createTrader(username, encodedPassword, name)
+        val trader = traderRepo.createTrader(username, encodedPassword, name)
+        walletService.addNewWallet(username, BigDecimal.ZERO)
+
+        return trader
 
     }
 
