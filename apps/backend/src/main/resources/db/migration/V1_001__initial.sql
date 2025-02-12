@@ -32,8 +32,7 @@ create table stock
     stock_id serial not null
         constraint stock_pk
             primary key,
-    stock_name text not null,
-    current_price decimal(10, 2) default 0 not null
+    stock_name text not null
 );
 
 create table stock_tx
