@@ -366,4 +366,67 @@ class MatchingServiceTest {
 		assertEquals(BigDecimal(8780), result.residualLiquidity)
 	}
 
+	@Test
+	fun `failed buys do not affect the state of the engine`() {
+		val time = Instant.now()
+
+		val sellOne = SellLimitOrder(
+			id = "one",
+			stock = "acme",
+			quantity = 1,
+			pricePerUnit = BigDecimal(100.0),
+			timestamp = time,
+		)
+
+		val sellTwo = SellLimitOrder(
+			id = "two",
+			stock = "acme",
+			quantity = 4,
+			pricePerUnit = BigDecimal(100.0),
+			timestamp = time.plusSeconds(1),
+		)
+
+		val sellThree = SellLimitOrder(
+			id = "three",
+			stock = "acme",
+			quantity = 2,
+			pricePerUnit = BigDecimal(100.0),
+			timestamp = time.plusSeconds(2),
+		)
+
+		matchingService.place(sellOne)
+		matchingService.place(sellTwo)
+		matchingService.place(sellThree)
+
+		val badBuyOrder = BuyMarketOrder(
+			"acme",
+			quantity = 3,
+			BigDecimal(299.0)
+		)
+
+		val badResult = matchingService.place(badBuyOrder)
+
+		assert(badResult is PlaceBuyOrderResult.Failure)
+
+		val goodBuyOrder = BuyMarketOrder(
+			"acme",
+			quantity = 6,
+			BigDecimal(9000.0),
+		)
+
+		val goodResult = matchingService.place(goodBuyOrder)
+
+		require(goodResult is PlaceBuyOrderResult.Success) { "Expected PlaceBuyOrderResult.Success, got ${goodResult::class.simpleName}" }
+
+		assertEquals(BigDecimal(9000-600), goodResult.residualLiquidity)
+
+		val remainingStockPerOrder = goodResult.sellOrderResidues.associate {
+			it.id to it.quantity
+		}
+
+		assertEquals(0, remainingStockPerOrder["one"])
+		assertEquals(0, remainingStockPerOrder["two"])
+		assertEquals(1, remainingStockPerOrder["three"])
+	}
+
 }

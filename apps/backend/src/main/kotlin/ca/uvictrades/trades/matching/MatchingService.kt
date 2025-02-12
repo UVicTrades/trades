@@ -41,11 +41,17 @@ class MatchingService {
 		var remainingLiquidity = order.liquidity
 
 		val residues: MutableList<SellLimitOrder> = mutableListOf()
+		val contingency: Queue<SellLimitOrder> = LinkedList()
 
 		while (remainingUnits > 0) {
-			val matchedOrder: SellLimitOrder = getSellOrdersForStock(order.stock).poll()
-				?: // No more sell orders remain.
+			val matchedOrder: SellLimitOrder? = getSellOrdersForStock(order.stock).poll()
+
+			if (matchedOrder == null) {
+				reinsertSellOrders(contingency, getSellOrdersForStock(order.stock))
 				return PlaceBuyOrderResult.Failure
+			}
+
+			contingency.add(matchedOrder)
 
 			val matchedQuantity = min(matchedOrder.quantity, remainingUnits)
 			remainingUnits -= matchedQuantity
@@ -54,6 +60,7 @@ class MatchingService {
 			remainingLiquidity -= matchedPrice
 
 			if (remainingLiquidity < BigDecimal.ZERO) {
+				reinsertSellOrders(contingency, getSellOrdersForStock(order.stock))
 				return PlaceBuyOrderResult.Failure
 			}
 
@@ -69,6 +76,13 @@ class MatchingService {
 		}
 
 		return PlaceBuyOrderResult.Success(residues, remainingLiquidity)
+	}
+
+	private fun reinsertSellOrders(fromContingencyQueue: Queue<SellLimitOrder>, into: PriorityQueue<SellLimitOrder>) {
+		generateSequence { fromContingencyQueue.poll() }
+			.forEach {
+				into.add(it)
+			}
 	}
 
 }
