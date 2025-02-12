@@ -3,6 +3,7 @@ package ca.uvictrades.trades.controller
 
 import ca.uvictrades.trades.configuration.JwtVerifier
 import ca.uvictrades.trades.controller.responses.*
+import ca.uvictrades.trades.service.StockService
 import ca.uvictrades.trades.service.WalletService
 import io.jsonwebtoken.JwtException
 import org.springframework.http.HttpStatus
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.client.HttpClientErrorException.Unauthorized
 import java.math.BigDecimal
 import java.time.OffsetDateTime
 
@@ -20,17 +20,33 @@ import java.time.OffsetDateTime
 class TransactionController (
     private val walletService: WalletService,
     private val jwtVerifier: JwtVerifier,
+    private val stockService: StockService,
 ) {
 
     @GetMapping("/getStockPrices")
-    fun getStockPrices(@RequestHeader("token") authHeader: String): StockPricesResponse {
-        var success: Boolean
-        var dataPayload: StockPriceResponse?
+    fun getStockPrices(@RequestHeader("token") authHeader: String): ResponseEntity<StockPricesResponse> {
+        val dataPayload: List<StockPriceResponse>?
 
         try{
             jwtVerifier.verify(authHeader)
 
-            val StockService.getStockPrice()
+            dataPayload = stockService.getStockPrices()
+
+            return ResponseEntity.ok(StockPricesResponse(
+                success = true,
+                data = dataPayload
+            ))
+
+
+        } catch(e: JwtException) {
+            // if we're in this block, it means the user's JWT was invalid
+            // thus, we return a 401.
+            return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(StockPricesResponse(
+                    success = false,
+                    data = null
+                ))
         }
         /*
         return StockPricesResponse(
