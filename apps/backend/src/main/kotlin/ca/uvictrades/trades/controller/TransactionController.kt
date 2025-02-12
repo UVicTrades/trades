@@ -55,15 +55,14 @@ class TransactionController (
     }
 
     @GetMapping("/getWalletBalance")
-    fun getWalletBalance(@RequestHeader("Authorization") authHeader: String): WalletBalanceResponse {
+    fun getWalletBalance(@RequestHeader("token") authHeader: String): WalletBalanceResponse {
         //Note: Bruno currently passes token as auth bearer token while project spec specifies passing as a header value with name=token
         var success: Boolean
         var dataPayload: WalletBalanceResponse.WalletBalance?
 
         try {
-            val token = authHeader.removePrefix("Bearer ").trim()
 
-            val username = jwtVerifier.verify(token)
+			val username = jwtVerifier.verify(authHeader)
 
             val balance = walletService.getWalletBalanceByUserName(username)?.balance
             success = true
@@ -85,15 +84,12 @@ class TransactionController (
     }
 
     @GetMapping("/getWalletTransactions")
-    fun getWalletTransactions(@RequestHeader("Authorization") authHeader: String): WalletTransactionsResponse {
-        //Note: Bruno currently passes token as auth bearer token while project spec specifies passing as a header value with name=token
-        var success: Boolean
+    fun getWalletTransactions(@RequestHeader("token") authHeader: String): WalletTransactionsResponse {
+		var success: Boolean
         var walletTransactions: List<WalletTransactionResponse>?
 
         try {
-            val token = authHeader.removePrefix("Bearer ").trim()
-
-            val username = jwtVerifier.verify(token)
+            val username = jwtVerifier.verify(authHeader)
 
             walletTransactions = walletService.getWalletTransactions(username)
             success = true
