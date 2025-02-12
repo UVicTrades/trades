@@ -4,10 +4,14 @@ package ca.uvictrades.trades.controller
 import ca.uvictrades.trades.configuration.JwtVerifier
 import ca.uvictrades.trades.controller.responses.*
 import ca.uvictrades.trades.service.WalletService
+import io.jsonwebtoken.JwtException
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.client.HttpClientErrorException.Unauthorized
 import java.math.BigDecimal
 import java.time.OffsetDateTime
 
@@ -19,7 +23,16 @@ class TransactionController (
 ) {
 
     @GetMapping("/getStockPrices")
-    fun getStockPrices(): StockPricesResponse {
+    fun getStockPrices(@RequestHeader("token") authHeader: String): StockPricesResponse {
+        var success: Boolean
+        var dataPayload: StockPriceResponse?
+
+        try{
+            jwtVerifier.verify(authHeader)
+
+            val StockService.getStockPrice()
+        }
+        /*
         return StockPricesResponse(
             data = listOf(
                 StockPriceResponse(
@@ -33,11 +46,11 @@ class TransactionController (
                     current_price = BigDecimal(200),
                 ),
             )
-        )
+        )*/
     }
 
     @GetMapping("/getStockPortfolio")
-    fun getStockPortfolio(): StockPortfolioResponse {
+    fun getStockPortfolio(@RequestHeader("token") authHeader: String): StockPortfolioResponse {
         return StockPortfolioResponse(
             data = listOf(
                 StockPriceResponse(
@@ -55,60 +68,59 @@ class TransactionController (
     }
 
     @GetMapping("/getWalletBalance")
-    fun getWalletBalance(@RequestHeader("token") authHeader: String): WalletBalanceResponse {
+    fun getWalletBalance(@RequestHeader("token") authHeader: String): ResponseEntity<WalletBalanceResponse> {
         //Note: Bruno currently passes token as auth bearer token while project spec specifies passing as a header value with name=token
-        var success: Boolean
         var dataPayload: WalletBalanceResponse.WalletBalance?
 
         try {
-
-			val username = jwtVerifier.verify(authHeader)
+            val username = jwtVerifier.verify(authHeader)
 
             val balance = walletService.getWalletBalanceByUserName(username)?.balance
-            success = true
             dataPayload = WalletBalanceResponse.WalletBalance(balance)
 
+            return ResponseEntity.ok(WalletBalanceResponse(
+                success = true,
+                data = dataPayload
+            ))
 
-        } catch (e: Exception) {
-            println("Error fetching wallet balance: ${e.message}")
-            success = false
-            dataPayload = null
+        } catch(e: JwtException) {
+            // if we're in this block, it means the user's JWT was invalid
+            // thus, we return a 401.
+            return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(WalletBalanceResponse(
+                    success = false,
+                    data = null
+                ))
         }
-
-        return WalletBalanceResponse(
-            success = success,
-            data = dataPayload
-        )
-
-
     }
 
     @GetMapping("/getWalletTransactions")
-    fun getWalletTransactions(@RequestHeader("token") authHeader: String): WalletTransactionsResponse {
-		var success: Boolean
+    fun getWalletTransactions(@RequestHeader("token") authHeader: String): ResponseEntity<WalletTransactionsResponse> {
         var walletTransactions: List<WalletTransactionResponse>?
 
         try {
             val username = jwtVerifier.verify(authHeader)
 
             walletTransactions = walletService.getWalletTransactions(username)
-            success = true
 
-
-        } catch (e: Exception) {
-            println("Error fetching wallet balance: ${e.message}")
-            success = false
-            walletTransactions = null
+            return ResponseEntity.ok(WalletTransactionsResponse(
+                success = true,
+                data = walletTransactions
+            ))
+        } catch (e: JwtException) {
+            return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(WalletTransactionsResponse(
+                    success = false,
+                    data = null
+                ))
         }
 
-        return WalletTransactionsResponse(
-            success = success,
-            data = walletTransactions
-        )
     }
 
     @GetMapping("/getStockTransactions")
-    fun getStockTransactions(): StockTransactionsResponse {
+    fun getStockTransactions(@RequestHeader("token") authHeader: String): StockTransactionsResponse {
         return StockTransactionsResponse(
             data = listOf(
                 StockTransactionResponse(
