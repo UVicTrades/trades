@@ -5,6 +5,6 @@ data class CreateStockResponse(
     val data: StockIdData?,
 ) {
     data class StockIdData(
-        val stock_id: String
+        val stock_id: String,
     )
 }

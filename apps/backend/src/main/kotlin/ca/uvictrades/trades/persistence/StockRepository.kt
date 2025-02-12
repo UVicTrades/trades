@@ -3,6 +3,7 @@ package ca.uvictrades.trades.persistence
 import org.jooq.DSLContext
 import ca.uvictrades.trades.model.public.tables.Stock.Companion.STOCK
 import ca.uvictrades.trades.model.public.tables.records.StockRecord
+import ca.uvictrades.trades.model.public.tables.references.STOCK_HOLDINGS
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -30,5 +31,18 @@ class StockRepository (
         record.store()
 
         return record
+    }
+
+    fun addStockToUser(username: String, stockId: Int, quantity: Int) {
+        with(STOCK_HOLDINGS) {
+            create.insertInto(STOCK_HOLDINGS)
+                .set(STOCK_ID, stockId)
+                .set(TRADER_USERNAME, username)
+                .set(QUANTITY, quantity)
+                .onConflict(STOCK_ID, TRADER_USERNAME)
+                .doUpdate()
+                .set(QUANTITY, QUANTITY.plus(quantity))
+                .execute()
+        }
     }
 }

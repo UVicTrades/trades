@@ -4,6 +4,8 @@ import ca.uvictrades.trades.model.public.tables.records.StockRecord
 import ca.uvictrades.trades.persistence.StockRepository
 import ca.uvictrades.trades.service.exceptions.StockCreationError
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import java.math.BigDecimal
 
 @Service
 class AdminService(
@@ -19,6 +21,11 @@ class AdminService(
 
         return stockRecord
 
+    }
+
+    @Transactional
+    fun addStockToUser(username: String, stockId: Int, quantity: Int) {
+        stockRepository.addStockToUser(username, stockId, quantity)
     }
 
 }
