@@ -7,29 +7,23 @@ import org.jooq.impl.DSL
 import org.springframework.boot.jdbc.DataSourceBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.jdbc.datasource.DataSourceTransactionManager
+import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy
+import org.springframework.transaction.PlatformTransactionManager
 import javax.sql.DataSource
 
 @Configuration
 class DatabaseConfiguration(
-    private val props: DatabaseProperties,
+	private val dataSource: DataSource,
 ) {
-    @Bean
-    fun dataSource(): DataSource? {
-        val dataSource =
-            DataSourceBuilder
-                .create()
-                .url(props.url)
-                .username(props.username)
-                .password(props.password)
-                .type(HikariDataSource::class.java)
-                .build()
-        return dataSource
-    }
 
     @Bean
     fun jooqDslContext(
         dataSource: DataSource,
     ): DSLContext? {
-        return DSL.using(dataSource, SQLDialect.POSTGRES)
+        return DSL.using(TransactionAwareDataSourceProxy(dataSource), SQLDialect.POSTGRES)
     }
+
+	@Bean
+	fun transactionManager(): PlatformTransactionManager = DataSourceTransactionManager(dataSource)
 }
