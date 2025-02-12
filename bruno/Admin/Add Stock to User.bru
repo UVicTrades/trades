@@ -7,10 +7,10 @@ meta {
 post {
   url: {{baseUrl}}/setup/addStockToUser
   body: json
-  auth: bearer
+  auth: none
 }
 
-auth:bearer {
+headers {
   token: {{token}}
 }
 
