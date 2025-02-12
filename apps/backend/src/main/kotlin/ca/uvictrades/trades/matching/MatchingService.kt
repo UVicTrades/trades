@@ -3,6 +3,7 @@ package ca.uvictrades.trades.matching
 import ca.uvictrades.trades.matching.port.BuyMarketOrder
 import ca.uvictrades.trades.matching.port.PlaceBuyOrderResult
 import ca.uvictrades.trades.matching.port.SellLimitOrder
+import ca.uvictrades.trades.matching.port.MatchingService as MatchingServiceInterface
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 import java.time.Instant
@@ -10,11 +11,11 @@ import java.util.*
 import kotlin.math.min
 
 @Component
-class MatchingService {
+class MatchingService : MatchingServiceInterface {
 
 	private val sellOrders: MutableMap<String, PriorityQueue<SellLimitOrder>> = mutableMapOf()
 
-	fun place(order: SellLimitOrder) {
+	override fun place(order: SellLimitOrder) {
 
 		val stockSellOrders = getSellOrdersForStock(order.stock)
 
@@ -35,7 +36,7 @@ class MatchingService {
 		return PriorityQueue(compareBy(SellLimitOrder::pricePerUnit, SellLimitOrder::timestamp))
 	}
 
-	fun place(order: BuyMarketOrder): PlaceBuyOrderResult {
+	override fun place(order: BuyMarketOrder): PlaceBuyOrderResult {
 
 		var remainingUnits = order.quantity
 		var remainingLiquidity = order.liquidity
