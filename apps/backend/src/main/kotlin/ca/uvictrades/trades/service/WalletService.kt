@@ -1,7 +1,7 @@
 package ca.uvictrades.trades.service
 
 import ca.uvictrades.trades.controller.responses.WalletTransactionResponse
-import ca.uvictrades.trades.model.public.tables.records.WalletRecord
+import ca.uvictrades.trades.model.public.tables.records.TraderRecord
 import ca.uvictrades.trades.persistence.WalletRepository
 import ca.uvictrades.trades.model.public.tables.records.WalletTxRecord
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -13,16 +13,7 @@ class WalletService(
     private val walletRepo: WalletRepository,
 ) {
 
-    fun addNewWallet(
-        username: String,
-        balance: BigDecimal,
-    ): WalletRecord {
-
-        return walletRepo.createWallet(username, balance)
-
-    }
-
-    fun getWalletBalanceByUserName(username: String): WalletRecord? {
+    fun getWalletBalanceByUserName(username: String): TraderRecord? {
         return walletRepo.getWalletByUsername(username)
     }
 

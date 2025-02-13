@@ -48,21 +48,6 @@ class TransactionController (
                     data = null
                 ))
         }
-        /*
-        return StockPricesResponse(
-            data = listOf(
-                StockPriceResponse(
-                    stock_id = "1",
-                    stock_name = "Apple",
-                    current_price = BigDecimal(100),
-                ),
-                StockPriceResponse(
-                    stock_id = "2",
-                    stock_name = "Google",
-                    current_price = BigDecimal(200),
-                ),
-            )
-        )*/
     }
 
     @GetMapping("/getStockPortfolio")

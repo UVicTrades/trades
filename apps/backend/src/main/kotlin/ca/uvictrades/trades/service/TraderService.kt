@@ -21,7 +21,6 @@ class TraderService(
 
         val encodedPassword = passwordEncoder.encode(password)
         val trader = traderRepo.createTrader(username, encodedPassword, name)
-        walletService.addNewWallet(username, BigDecimal.ZERO)
 
         return trader
 

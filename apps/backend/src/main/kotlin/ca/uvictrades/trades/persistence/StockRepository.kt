@@ -36,9 +36,9 @@ class StockRepository (
     fun addStockToUser(username: String, stockId: Int, quantity: Int) {
         with(STOCK_HOLDINGS) {
             create.insertInto(STOCK_HOLDINGS)
-                .set(STOCK_ID, stockId)
-                .set(TRADER_USERNAME, username)
-                .set(QUANTITY, quantity)
+                    .set(STOCK_ID, stockId)
+                    .set(TRADER_USERNAME, username)
+                    .set(QUANTITY, quantity)
                 .onConflict(STOCK_ID, TRADER_USERNAME)
                 .doUpdate()
                 .set(QUANTITY, QUANTITY.plus(quantity))
