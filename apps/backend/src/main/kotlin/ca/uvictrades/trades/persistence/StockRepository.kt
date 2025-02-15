@@ -39,12 +39,6 @@ class StockRepository (
     private val create: DSLContext,
 ) {
 
-    fun getAllStockPrices(): List<StockRecord> {
-        return create.selectFrom(STOCK)
-            .fetch()
-            .map{ it.into(StockRecord::class.java)}
-    }
-
     fun getStockWithName(name: String): StockRecord? {
         return create.selectFrom(STOCK)
             .where(STOCK.STOCK_NAME.eq(name))
