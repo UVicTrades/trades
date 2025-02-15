@@ -6,6 +6,7 @@ import ca.uvictrades.trades.model.public.tables.WalletTx.Companion.WALLET_TX
 import ca.uvictrades.trades.model.public.tables.records.WalletTxRecord
 import ca.uvictrades.trades.model.public.tables.references.STOCK_HOLDINGS
 import org.jooq.DSLContext
+import org.jooq.Records
 import org.jooq.impl.DSL
 import org.springframework.stereotype.Repository
 import java.math.BigDecimal
@@ -24,7 +25,6 @@ class WalletRepository(
         return create.selectFrom(WALLET_TX)
             .where(WALLET_TX.USERNAME.eq(username))
             .fetch() //type of each entry is a Result<Record>
-            .map { it.into(WalletTxRecord::class.java) } //map into a WalletTxRecord
     }
 
     fun addMoneyToWallet(username: String, amount: BigDecimal){

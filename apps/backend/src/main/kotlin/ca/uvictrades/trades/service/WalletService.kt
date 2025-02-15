@@ -1,6 +1,7 @@
 package ca.uvictrades.trades.service
 
 import ca.uvictrades.trades.controller.responses.WalletTransactionResponse
+import ca.uvictrades.trades.controller.responses.toWalletTransactionResponse
 import ca.uvictrades.trades.model.public.tables.records.TraderRecord
 import ca.uvictrades.trades.persistence.WalletRepository
 import ca.uvictrades.trades.model.public.tables.records.WalletTxRecord
@@ -19,6 +20,7 @@ class WalletService(
 
     fun getWalletTransactions(username: String): List<WalletTransactionResponse> {
         return walletRepo.getTransactionsByUsername(username)
-            .map { it.into(WalletTransactionResponse::class.java) }
+            .map { it.toWalletTransactionResponse() }
+
     }
 }

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.math.BigDecimal
-import java.time.OffsetDateTime
 
 @RestController
 @RequestMapping("/transaction")
@@ -121,33 +120,24 @@ class TransactionController (
     }
 
     @GetMapping("/getStockTransactions")
-    fun getStockTransactions(@RequestHeader("token") authHeader: String): StockTransactionsResponse {
-        return StockTransactionsResponse(
-            data = listOf(
-                StockTransactionResponse(
-                    stock_tx_id = "62738363a50350b1fbb243a6",
-                    stock_id = "1",
-                    wallet_tx_id = "628ba23df2210df6c3764823",
-                    order_status = StockTransactionResponse.OrderStatus.COMPLETED,
-                    is_buy = true,
-                    order_type = StockTransactionResponse.OrderType.LIMIT,
-                    stock_price = BigDecimal(50),
-                    quantity = 2,
-                    time_stamp = OffsetDateTime.parse("2024-01-12T15:03:25.019+00:00")
-                ),
-                StockTransactionResponse(
-                    stock_tx_id = "62738363a50350b1fbb243a6",
-                    stock_id = "1",
-                    wallet_tx_id = "628ba23df2210df6c3764823",
-                    order_status = StockTransactionResponse.OrderStatus.COMPLETED,
-                    is_buy = false,
-                    order_type = StockTransactionResponse.OrderType.MARKET,
-                    stock_price = BigDecimal(50),
-                    quantity = 2,
-                    time_stamp = OffsetDateTime.parse("2024-01-12T15:03:25.019+00:00")
-                )
-            )
-        )
+    fun getStockTransactions(@RequestHeader("token") authHeader: String): ResponseEntity<StockTransactionsResponse> {
+        try {
+            val username = jwtVerifier.verify(authHeader)
+
+            val dataPayload = stockService.getStockTransactions(username)
+
+            return ResponseEntity.ok(StockTransactionsResponse(
+                success = true,
+                data = dataPayload
+            ))
+        } catch (e: JwtException) {
+            return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(StockTransactionsResponse(
+                    success = false,
+                    data = null
+                ))
+        }
     }
 
 }
