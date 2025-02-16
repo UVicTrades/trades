@@ -7,42 +7,67 @@ create table trader
     name     text not null
 );
 
-create table wallet
-(
-    wallet_id serial not null
-        constraint wallet_pk
-            primary key,
-    username text references trader(username) not null,
-    balance decimal(10, 2) default 0 not null
-);
-
-create table wallet_tx
-(
-    wallet_tx_id serial not null
-        constraint wallet_tx_pk
-            primary key,
-    wallet_id integer references wallet(wallet_id) not null,
-    is_debit boolean not null,
-    amount decimal(10, 2) not null,
-    time_stamp timestamp default current_timestamp
-);
-
 create table stock
 (
-    stock_id serial not null
+    id   serial
         constraint stock_pk
             primary key,
-    stock_name text not null,
-    current_price decimal(10, 2) default 0 not null
+    name text   not null
 );
 
-create table stock_tx
+create table sell_order
 (
-    id serial not null
-        constraint stock_tx_pk
+    id              serial
+        constraint sell_order_pk
             primary key,
-    stock_id integer references stock(stock_id) not null,
-    is_debit boolean not null,
-    amount decimal(10, 2) not null,
-    time_stamp timestamp default current_timestamp
+    stock_id        integer            not null
+        constraint sell_order_stock_id_fk
+            references stock (id),
+    quantity        integer            not null,
+    price_per_share decimal            not null,
+    trader          text               not null
+        constraint sell_order_trader_id_fk
+            references trader,
+    cancelled       bool default false not null
 );
+
+create table buy_order
+(
+    id            serial
+        constraint buy_order_pk
+            primary key,
+    sell_order_id integer not null
+        constraint buy_order_sell_order_id_fk
+            references sell_order,
+    trader        text    not null
+        constraint buy_order_trader_username_fk
+            references trader,
+    quantity      integer not null
+);
+
+create table wallet_transaction
+(
+    id     serial
+        constraint wallet_transaction_pk
+            primary key,
+    trader text          not null
+        constraint wallet_transaction_trader_username_fk
+            references trader,
+    amount numeric(16,2) not null,
+    hidden boolean       not null
+);
+
+create table stock_holding
+(
+    trader   text    not null
+        constraint stock_holding_trader_username_fk
+            references trader,
+    stock    integer not null
+        constraint stock_holding_stock_id_fk
+            references stock,
+    quantity integer not null,
+    constraint stock_holding_pk
+        primary key (trader, stock)
+);
+
+

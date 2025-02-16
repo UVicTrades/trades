@@ -10,7 +10,6 @@ import java.math.BigDecimal
 class TraderService(
     private val traderRepo: TraderRepository,
     private val passwordEncoder: PasswordEncoder,
-    private val walletService: WalletService,
 ) {
 
     fun registerNewTrader(
@@ -21,7 +20,7 @@ class TraderService(
 
         val encodedPassword = passwordEncoder.encode(password)
         val trader = traderRepo.createTrader(username, encodedPassword, name)
-        walletService.addNewWallet(username, BigDecimal.ZERO)
+//        walletService.addNewWallet(username, BigDecimal.ZERO)
 
         return trader
 
