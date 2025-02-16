@@ -1,8 +1,7 @@
 package ca.uvictrades.trades.controller.admin
 
 import ca.uvictrades.trades.configuration.JwtVerifier
-//import ca.uvictrades.trades.controller.admin.requests.AddMoneyToWalletRequest
-//import ca.uvictrades.trades.controller.admin.responses.AddMoneyToWalletResponse
+import ca.uvictrades.trades.controller.admin.requests.AddMoneyToWalletRequest
 
 import ca.uvictrades.trades.service.AdminService
 import ca.uvictrades.trades.controller.admin.requests.CreateStockRequest
@@ -25,18 +24,18 @@ class AdminController(
     private val jwtVerifier: JwtVerifier,
     private val adminService: AdminService,
 ) {
-/*
+
     @PostMapping("/transaction/addMoneyToWallet")
     fun addMoneyToWallet(
         @RequestHeader("token") authHeader: String,
         @RequestBody request: AddMoneyToWalletRequest
-    ): ResponseEntity<AddMoneyToWalletResponse> {
+    ): ResponseEntity<SuccessTrueDataNull> {
         try {
             val username = jwtVerifier.verify(authHeader)
 
             adminService.addMoneyToWallet(username, request.amount)
 
-            return ResponseEntity.ok(AddMoneyToWalletResponse(
+            return ResponseEntity.ok(SuccessTrueDataNull(
                 success = true,
                 data = null,
             ))
@@ -44,14 +43,14 @@ class AdminController(
             return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(
-                    AddMoneyToWalletResponse(
+                    SuccessTrueDataNull(
                         success = false,
                         data = null
                     )
                 )
         }
     }
-*/
+
 
     @PostMapping("/setup/createStock")
     fun createStock(
