@@ -1,4 +1,5 @@
 services:
+
   frontend:
     build:
       context: apps/frontend
@@ -8,15 +9,8 @@ services:
     ports: [ 8100:8100 ]
     environment:
       PORT: 8100
-
-  # proxy:
-  #   build: apps/proxy
-  #   container_name: trade_proxy
-  #   restart: unless-stopped
-  #   depends_on: []
-  #   volumes: [ ./apps/proxy:/app ]
-  #   environment: []
-  #   ports: [ 80:80, 443:443 ]
+    networks:
+      - trade_network
 
   backend:
     build:
@@ -30,6 +24,8 @@ services:
       DB_URL: jdbc:postgresql://database:5432/trade
       DB_USERNAME: trade
       DB_PASSWORD: trade
+    networks:
+      - trade_network  # Assign backend to the network
 
   database:
     image: timescale/timescaledb-ha:pg17
@@ -43,3 +39,9 @@ services:
       - POSTGRES_USER=trade
       - POSTGRES_PASSWORD=trade
       - POSTGRES_DB=trade
+    networks:
+      - trade_network
+
+networks:
+  trade_network:
+    driver: bridge
