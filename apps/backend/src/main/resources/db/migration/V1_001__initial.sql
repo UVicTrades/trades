@@ -49,16 +49,3 @@ create table wallet_tx
     amount decimal(10, 2) not null,
     time_stamp timestamp default current_timestamp
 );
-
-
-create table wallet_tx
-(
-    wallet_tx_id serial not null
-        constraint wallet_tx_pk
-            primary key,
-    username text references trader(username) not null,
-    stock_tx_id integer references stock_tx(stock_tx_id) not null,
-    is_debit boolean not null,
-    amount decimal(10, 2) not null,
-    time_stamp timestamp default current_timestamp
-);

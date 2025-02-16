@@ -1,8 +1,8 @@
 package ca.uvictrades.trades.controller.admin
 
 import ca.uvictrades.trades.configuration.JwtVerifier
-import ca.uvictrades.trades.controller.admin.requests.AddMoneyToWalletRequest
-import ca.uvictrades.trades.controller.admin.responses.AddMoneyToWalletResponse
+//import ca.uvictrades.trades.controller.admin.requests.AddMoneyToWalletRequest
+//import ca.uvictrades.trades.controller.admin.responses.AddMoneyToWalletResponse
 
 import ca.uvictrades.trades.service.AdminService
 import ca.uvictrades.trades.controller.admin.requests.CreateStockRequest
@@ -25,7 +25,7 @@ class AdminController(
     private val jwtVerifier: JwtVerifier,
     private val adminService: AdminService,
 ) {
-
+/*
     @PostMapping("/transaction/addMoneyToWallet")
     fun addMoneyToWallet(
         @RequestHeader("token") authHeader: String,
@@ -51,6 +51,7 @@ class AdminController(
                 )
         }
     }
+*/
 
     @PostMapping("/setup/createStock")
     fun createStock(

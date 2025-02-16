@@ -1,6 +1,7 @@
 package ca.uvictrades.trades.controller.user
 
 import ca.uvictrades.trades.configuration.JwtGenerator
+import ca.uvictrades.trades.controller.responses.ErrorResponse
 import ca.uvictrades.trades.controller.user.requests.LoginUserRequest
 import ca.uvictrades.trades.controller.user.requests.RegisterUserRequest
 import ca.uvictrades.trades.controller.user.responses.LoginUserResponse
@@ -18,25 +19,28 @@ class UserController(
 
     @PostMapping("/authentication/register")
     fun registerUser(@RequestBody request: RegisterUserRequest): RegisterUserResponse {
-        traderService.registerNewTrader(
-            request.user_name,
-            request.password,
-            request.name,
-        )
+		return try {
+			traderService.registerNewTrader(
+				request.user_name,
+				request.password,
+				request.name,
+			)
+			RegisterUserResponse(success = true)
+		} catch(e: Exception){
+			RegisterUserResponse(success = false, data = ErrorResponse(error = "Registration failed"))
+		}
 
-        return RegisterUserResponse()
     }
 
     @PostMapping("/authentication/login")
     fun loginUser(@RequestBody request: LoginUserRequest): LoginUserResponse {
-        val trader = traderService.loginTrader(request.user_name, request.password)
+		return try {
+			val trader = traderService.loginTrader(request.user_name, request.password)
 
-        val jwt = jwtGenerator.generate(trader.username!!)
-
-        return LoginUserResponse(
-            data = LoginUserResponse.TokenData(jwt)
-        )
-    }
-
-
+			val jwt = jwtGenerator.generate(trader.username!!)
+			LoginUserResponse(success = true, data = LoginUserResponse.TokenData(jwt))
+		} catch (e: Exception) {
+			LoginUserResponse(success = false, data = ErrorResponse(error = e.message ?: "Invalid credentials"))
+		}
+	}
 }

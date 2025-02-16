@@ -1,7 +1,7 @@
 package ca.uvictrades.trades.persistence
 
 import ca.uvictrades.trades.controller.responses.StockTransactionResponse
-import ca.uvictrades.trades.controller.trade.requests.PlaceStockOrderRequest
+//import ca.uvictrades.trades.controller.trade.requests.PlaceStockOrderRequest
 import ca.uvictrades.trades.model.public.enums.Ordertype
 import ca.uvictrades.trades.model.public.enums.Status
 import org.jooq.DSLContext
