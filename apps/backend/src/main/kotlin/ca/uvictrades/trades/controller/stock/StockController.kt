@@ -1,11 +1,7 @@
 package ca.uvictrades.trades.controller.stock
 
 import ca.uvictrades.trades.configuration.JwtVerifier
-import ca.uvictrades.trades.controller.stock.responses.GetStockPortfolioResponse
-import ca.uvictrades.trades.controller.stock.responses.toGetStockPricesDataElement
-import ca.uvictrades.trades.controller.stock.responses.GetStockPricesResponse
-import ca.uvictrades.trades.controller.stock.responses.GetWalletBalanceResponse
-import ca.uvictrades.trades.controller.stock.responses.toGetPortfolioDataElement
+import ca.uvictrades.trades.controller.stock.responses.*
 import ca.uvictrades.trades.persistence.StockRepository
 import ca.uvictrades.trades.persistence.WalletRepository
 import io.jsonwebtoken.JwtException
@@ -69,6 +65,22 @@ class StockController(
 
 			return GetStockPricesResponse(
 				data = prices.map { it.toGetStockPricesDataElement() }
+			)
+		} catch (e: JwtException) {
+			throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
+		}
+	}
+
+	@GetMapping("/transaction/getWalletTransactions")
+	fun getWalletTransactions(
+		@RequestHeader("token") token: String
+	): GetWalletTransactionsResponse {
+		try {
+			val username = jwtVerifier.verify(token)
+			val walletTransactions = walletRepo.getWalletTransactions(username)
+
+			return GetWalletTransactionsResponse(
+				data = walletTransactions.map { it.toGetWalletTransactionDataElement() }
 			)
 		} catch (e: JwtException) {
 			throw ResponseStatusException(HttpStatus.UNAUTHORIZED)

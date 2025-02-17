@@ -1,5 +1,6 @@
 package ca.uvictrades.trades.persistence
 
+import ca.uvictrades.trades.model.public.tables.records.WalletTransactionRecord
 import ca.uvictrades.trades.model.public.tables.references.WALLET_TRANSACTION
 import org.jooq.DSLContext
 import org.jooq.impl.DSL.coalesce
@@ -48,4 +49,13 @@ class WalletRepository(
 
 		record.store()
     }
+
+	fun getWalletTransactions(username: String): List<WalletTransactionRecord> {
+		return with (WALLET_TRANSACTION) {
+			create.selectFrom(this)
+				.where(TRADER.eq(username))
+				.and(BUY_ORDER_ID.isNotNull) //Based on requirements - GetWalletTransaction API does not show wallet txs that are simply just adding/removing amount
+				.fetch()
+		}
+	}
 }

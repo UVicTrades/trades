@@ -57,8 +57,6 @@ create table buy_order_sell_order
 
 comment on column buy_order_sell_order.quantity is 'How many shares in the sell order this buy order takes.';
 
-
-
 create table wallet_transaction
 (
     id           serial
@@ -70,7 +68,8 @@ create table wallet_transaction
     amount       numeric(16,2) not null,
     buy_order_id integer
         constraint wallet_transaction_buy_order_id_fk
-            references buy_order(id)
+            references buy_order(id),
+    time_stamp timestamp default current_timestamp
 );
 
 create table stock_holding

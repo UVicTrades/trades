@@ -3,8 +3,10 @@ package ca.uvictrades.trades.persistence
 import ca.uvictrades.trades.model.public.tables.Stock.Companion.STOCK
 import ca.uvictrades.trades.model.public.tables.records.SellOrderRecord
 import ca.uvictrades.trades.model.public.tables.records.StockRecord
+import ca.uvictrades.trades.model.public.tables.records.WalletTransactionRecord
 import ca.uvictrades.trades.model.public.tables.references.SELL_ORDER
 import ca.uvictrades.trades.model.public.tables.references.STOCK_HOLDING
+import ca.uvictrades.trades.model.public.tables.references.WALLET_TRANSACTION
 import org.jooq.DSLContext
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
@@ -100,6 +102,7 @@ class StockRepository(
 			.where(SELL_ORDER.CANCELLED.eq(false))
 			.fetchInto(SellOrderWithStockName::class.java)
 	}
+
 }
 
 data class PortfolioItem(
