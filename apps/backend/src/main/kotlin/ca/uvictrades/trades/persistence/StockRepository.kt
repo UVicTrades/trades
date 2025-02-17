@@ -8,6 +8,7 @@ import ca.uvictrades.trades.model.public.tables.references.STOCK_HOLDING
 import org.jooq.DSLContext
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
+import java.math.BigDecimal
 
 @Repository
 class StockRepository(
@@ -88,6 +89,17 @@ class StockRepository(
 		}
 	}
 
+	fun getSellOrderPrices(): List<SellOrderWithStockName> {
+		return create.select(
+			SELL_ORDER.STOCK_ID,
+			SELL_ORDER.PRICE_PER_SHARE,
+			STOCK.NAME
+		)
+			.from(SELL_ORDER)
+			.join(STOCK).on(SELL_ORDER.STOCK_ID.eq(STOCK.ID))
+			.where(SELL_ORDER.CANCELLED.eq(false))
+			.fetchInto(SellOrderWithStockName::class.java)
+	}
 }
 
 data class PortfolioItem(
@@ -99,4 +111,10 @@ data class PortfolioItem(
 data class SellOrderToTrader(
 	val sellOrderId: Int,
 	val trader: String,
+)
+
+data class SellOrderWithStockName(
+	val stockId: Int,
+	val pricePerShare: BigDecimal,
+	val name: String
 )

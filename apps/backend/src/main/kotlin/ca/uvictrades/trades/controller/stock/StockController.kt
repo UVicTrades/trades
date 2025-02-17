@@ -2,6 +2,8 @@ package ca.uvictrades.trades.controller.stock
 
 import ca.uvictrades.trades.configuration.JwtVerifier
 import ca.uvictrades.trades.controller.stock.responses.GetStockPortfolioResponse
+import ca.uvictrades.trades.controller.stock.responses.toGetStockPricesDataElement
+import ca.uvictrades.trades.controller.stock.responses.GetStockPricesResponse
 import ca.uvictrades.trades.controller.stock.responses.GetWalletBalanceResponse
 import ca.uvictrades.trades.controller.stock.responses.toGetPortfolioDataElement
 import ca.uvictrades.trades.persistence.StockRepository
@@ -53,6 +55,23 @@ class StockController(
 			)
 		} catch (e: JwtException) {
 			TODO("Not yet implemented")
+		}
+	}
+
+
+	@GetMapping("/transaction/getStockPrices")
+	fun getStockPrices(
+		@RequestHeader("token") token: String,
+	): GetStockPricesResponse {
+		try {
+			jwtVerifier.verify(token)
+			val prices = stockRepo.getSellOrderPrices()
+
+			return GetStockPricesResponse(
+				data = prices.map { it.toGetStockPricesDataElement() }
+			)
+		} catch (e: JwtException) {
+			throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
 		}
 	}
 
