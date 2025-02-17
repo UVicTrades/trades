@@ -16,8 +16,12 @@ headers {
 
 body:json {
   {
-    "stock_name": "Google"
+    "stock_name": "ACME"
   }
+}
+
+script:post-response {
+  bru.setVar("stockId", res.body.data.stock_id)
 }
 
 docs {

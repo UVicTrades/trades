@@ -70,7 +70,7 @@ class MatchingServiceTest {
 
 		require(result is PlaceBuyOrderResult.Success)
 
-		Assertions.assertEquals(sellOrder.id, result.sellOrderResidues.first().id)
+		Assertions.assertEquals(sellOrder.id, result.sellOrderResidues.first().orderId)
 	}
 
 	@Test
@@ -116,7 +116,7 @@ class MatchingServiceTest {
 
 		require(result is PlaceBuyOrderResult.Success)
 
-		assertEquals("some-specific-id", result.sellOrderResidues.first().id)
+		assertEquals("some-specific-id", result.sellOrderResidues.first().orderId)
 	}
 
 	@Test
@@ -151,7 +151,7 @@ class MatchingServiceTest {
 
 		require(result is PlaceBuyOrderResult.Success)
 
-		assertEquals(lowSellOrder.id, result.sellOrderResidues.first().id)
+		assertEquals(lowSellOrder.id, result.sellOrderResidues.first().orderId)
 	}
 
 	@Test
@@ -278,11 +278,11 @@ class MatchingServiceTest {
 
 		require(result is PlaceBuyOrderResult.Success)
 
-		assertEquals("one", result.sellOrderResidues.first().id)
+		assertEquals("one", result.sellOrderResidues.first().orderId)
 
 		assertEquals(1, result.sellOrderResidues.size)
 
-		assertEquals(0, result.sellOrderResidues.first().quantity)
+		assertEquals(0, result.sellOrderResidues.first().remainingQuantity)
 	}
 
 	@Test
@@ -320,7 +320,7 @@ class MatchingServiceTest {
 		require(result is PlaceBuyOrderResult.Success)
 
 		val residualQuantities = result.sellOrderResidues.associate {
-			it.id to it.quantity
+			it.orderId to it.remainingQuantity
 		}
 
 		assertEquals(0, residualQuantities["one"])
@@ -421,7 +421,7 @@ class MatchingServiceTest {
 		assertEquals(BigDecimal(9000-600), goodResult.residualLiquidity)
 
 		val remainingStockPerOrder = goodResult.sellOrderResidues.associate {
-			it.id to it.quantity
+			it.orderId to it.remainingQuantity
 		}
 
 		assertEquals(0, remainingStockPerOrder["one"])
@@ -429,4 +429,106 @@ class MatchingServiceTest {
 		assertEquals(1, remainingStockPerOrder["three"])
 	}
 
+	@Test
+	fun `matched and remaining quantities are correct`() {
+		val time = Instant.now()
+
+		val sellOne = SellLimitOrder(
+			id = "one",
+			stock = "acme",
+			quantity = 1,
+			pricePerUnit = BigDecimal(100.0),
+			timestamp = time,
+		)
+
+		val sellTwo = SellLimitOrder(
+			id = "two",
+			stock = "acme",
+			quantity = 4,
+			pricePerUnit = BigDecimal(100.0),
+			timestamp = time.plusSeconds(1),
+		)
+
+		matchingService.place(sellOne)
+		matchingService.place(sellTwo)
+
+		val buy = BuyMarketOrder(
+			"acme",
+			quantity = 3,
+			BigDecimal(9000.0),
+		)
+
+		val result = matchingService.place(buy)
+
+		require(result is PlaceBuyOrderResult.Success)
+
+		val remainingStockPerOrder = result.sellOrderResidues.associate {
+			it.orderId to it.remainingQuantity
+		}
+
+		val matchedStockPerOrder = result.sellOrderResidues.associate {
+			it.orderId to it.matchedQuantity
+		}
+
+		assertEquals(0, remainingStockPerOrder["one"])
+		assertEquals(2, remainingStockPerOrder["two"])
+
+		assertEquals(1, matchedStockPerOrder["one"])
+		assertEquals(2, matchedStockPerOrder["two"])
+	}
+
+	@Test
+	fun `a single sell can fulfill multiple buys`() {
+		val time = Instant.now()
+
+		val sellOrder = SellLimitOrder(
+			id = "one",
+			stock = "acme",
+			quantity = 8,
+			pricePerUnit = BigDecimal(100.0),
+			time,
+		)
+
+		matchingService.place(sellOrder)
+
+		val resultOne = matchingService.place(
+			BuyMarketOrder(
+				"acme",
+				quantity = 3,
+				BigDecimal(9000.0),
+			)
+		)
+
+		assert(resultOne is PlaceBuyOrderResult.Success)
+
+		val resultTwo = matchingService.place(
+			BuyMarketOrder(
+				"acme",
+				quantity = 1,
+				BigDecimal(9000.0),
+			)
+		)
+
+		assert(resultTwo is PlaceBuyOrderResult.Success)
+
+		val resultThree = matchingService.place(
+			BuyMarketOrder(
+				"acme",
+				quantity = 4,
+				BigDecimal(9000.0),
+			)
+		)
+
+		assert(resultThree is PlaceBuyOrderResult.Success)
+
+		val resultFour = matchingService.place(
+			BuyMarketOrder(
+				"acme",
+				quantity = 1,
+				BigDecimal(9000.0),
+			)
+		)
+
+		assert(resultFour is PlaceBuyOrderResult.Failure)
+	}
 }

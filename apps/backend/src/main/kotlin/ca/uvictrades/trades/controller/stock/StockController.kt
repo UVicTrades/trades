@@ -1,7 +1,10 @@
 package ca.uvictrades.trades.controller.stock
 
 import ca.uvictrades.trades.configuration.JwtVerifier
+import ca.uvictrades.trades.controller.stock.responses.GetStockPortfolioResponse
 import ca.uvictrades.trades.controller.stock.responses.GetWalletBalanceResponse
+import ca.uvictrades.trades.controller.stock.responses.toGetPortfolioDataElement
+import ca.uvictrades.trades.persistence.StockRepository
 import ca.uvictrades.trades.persistence.WalletRepository
 import io.jsonwebtoken.JwtException
 import org.springframework.http.HttpStatus
@@ -14,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException
 class StockController(
 	private val walletRepo: WalletRepository,
 	private val jwtVerifier: JwtVerifier,
+	private val stockRepo: StockRepository,
 ) {
 
 	@GetMapping("/transaction/getWalletBalance")
@@ -33,6 +37,22 @@ class StockController(
 
 		} catch (e: JwtException) {
 			throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
+		}
+	}
+
+	@GetMapping("/transaction/getStockPortfolio")
+	fun getStockPortfolio(
+		@RequestHeader("token") token: String,
+	): GetStockPortfolioResponse {
+		try {
+			val username = jwtVerifier.verify(token)
+			val portfolio = stockRepo.getPortfolio(username)
+
+			return GetStockPortfolioResponse(
+				data = portfolio.map { it.toGetPortfolioDataElement() }
+			)
+		} catch (e: JwtException) {
+			TODO("Not yet implemented")
 		}
 	}
 

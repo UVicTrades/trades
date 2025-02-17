@@ -3,6 +3,7 @@ package ca.uvictrades.trades.matching
 import ca.uvictrades.trades.matching.port.BuyMarketOrder
 import ca.uvictrades.trades.matching.port.PlaceBuyOrderResult
 import ca.uvictrades.trades.matching.port.SellLimitOrder
+import ca.uvictrades.trades.matching.port.SellLimitOrderResidue
 import ca.uvictrades.trades.matching.port.MatchingService as MatchingServiceInterface
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
@@ -41,7 +42,7 @@ class MatchingService : MatchingServiceInterface {
 		var remainingUnits = order.quantity
 		var remainingLiquidity = order.liquidity
 
-		val residues: MutableList<SellLimitOrder> = mutableListOf()
+		val residues: MutableList<SellLimitOrderResidue> = mutableListOf()
 		val contingency: Queue<SellLimitOrder> = LinkedList()
 
 		while (remainingUnits > 0) {
@@ -65,16 +66,30 @@ class MatchingService : MatchingServiceInterface {
 				return PlaceBuyOrderResult.Failure
 			}
 
-			val residue = SellLimitOrder(
-				matchedOrder.id,
-				matchedOrder.stock,
-				matchedOrder.quantity - matchedQuantity,
-				matchedOrder.pricePerUnit,
-				Instant.now(),
+			val residue = SellLimitOrderResidue(
+				orderId = matchedOrder.id,
+				stockId = matchedOrder.stock,
+				matchedQuantity = matchedQuantity,
+				remainingQuantity = matchedOrder.quantity - matchedQuantity,
+				pricePerUnit = matchedOrder.pricePerUnit,
+				timestamp = matchedOrder.timestamp,
 			)
 
 			residues.add(residue)
 		}
+
+		residues.filter { it.remainingQuantity > 0 }
+			.forEach { residue ->
+				getSellOrdersForStock(order.stock).add(
+					SellLimitOrder(
+						residue.orderId,
+						residue.stockId,
+						residue.remainingQuantity,
+						residue.pricePerUnit,
+						residue.timestamp,
+					)
+				)
+			}
 
 		return PlaceBuyOrderResult.Success(residues, remainingLiquidity)
 	}

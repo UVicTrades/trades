@@ -1,7 +1,7 @@
 meta {
-  name: Place Stock Order
+  name: Place Stock Order (BUY)
   type: http
-  seq: 1
+  seq: 3
 }
 
 post {
@@ -12,11 +12,10 @@ post {
 
 body:json {
   {
-    "stock_id": 1,
+    "stock_id": 2,
     "is_buy": true,
-    "order_type": "LIMIT",
-    "quantity": 100,
-    "price": 80
+    "order_type": "MARKET",
+    "quantity": 10
   }
 }
 

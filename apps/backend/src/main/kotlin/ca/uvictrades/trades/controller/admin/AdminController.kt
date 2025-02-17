@@ -32,7 +32,7 @@ class AdminController(
 		try {
 			val username = jwtVerifier.verify(token)
 
-			walletRepo.addMoneyToTrader(username, body.amount)
+			walletRepo.creditOrDebitTrader(username, body.amount)
 
 			return SuccessTrueDataNull()
 		} catch (e: JwtException) {

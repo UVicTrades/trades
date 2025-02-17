@@ -24,7 +24,7 @@ create table sell_order
         constraint sell_order_stock_id_fk
             references stock (id),
     quantity        integer            not null,
-    price_per_share decimal            not null,
+    price_per_share decimal(16,2)      not null,
     trader          text               not null
         constraint sell_order_trader_id_fk
             references trader,
@@ -36,25 +36,41 @@ create table buy_order
     id            serial
         constraint buy_order_pk
             primary key,
-    sell_order_id integer not null
-        constraint buy_order_sell_order_id_fk
-            references sell_order,
     trader        text    not null
         constraint buy_order_trader_username_fk
             references trader,
     quantity      integer not null
 );
 
+create table buy_order_sell_order
+(
+    buy_order_id  integer not null
+        constraint buy_order_sell_order_buy_order_id_fk
+            references buy_order,
+    sell_order_id integer not null
+        constraint buy_order_sell_order_sell_order_id_fk
+            references sell_order,
+    quantity      integer not null,
+    constraint buy_order_sell_order_pk
+        primary key (buy_order_id, sell_order_id)
+);
+
+comment on column buy_order_sell_order.quantity is 'How many shares in the sell order this buy order takes.';
+
+
+
 create table wallet_transaction
 (
-    id     serial
+    id           serial
         constraint wallet_transaction_pk
             primary key,
-    trader text          not null
+    trader       text          not null
         constraint wallet_transaction_trader_username_fk
             references trader,
-    amount numeric(16,2) not null,
-    hidden boolean       not null
+    amount       numeric(16,2) not null,
+    buy_order_id integer
+        constraint wallet_transaction_buy_order_id_fk
+            references buy_order(id)
 );
 
 create table stock_holding
