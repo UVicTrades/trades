@@ -80,6 +80,15 @@ class TradeRepository(
 		return record
 	}
 
+	fun cancelSellOrder(withId: Int) {
+		with(SELL_ORDER) {
+			create.update(this)
+				.set(CANCELLED, true)
+				.where(ID.eq(withId))
+				.execute()
+		}
+	}
+
 }
 
 data class SellOrderQuantity(

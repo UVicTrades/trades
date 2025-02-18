@@ -11,6 +11,7 @@ import ca.uvictrades.trades.persistence.TradeRepository
 import ca.uvictrades.trades.persistence.WalletRepository
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.client.HttpClientErrorException.Unauthorized
 import java.math.BigDecimal
 import java.time.Instant
 import kotlin.time.times
@@ -133,6 +134,18 @@ class TradeService(
 				currentPrice = price,
 			)
 		}
+	}
+
+	fun cancelOrder(orderId: Int, traderUsername: String) {
+		val order = tradeRepo.getSellOrder(orderId)
+
+		if (order.trader != traderUsername) {
+			error("Trader is unauthorized")
+		}
+
+		matchingService.cancelOrder(orderId.toString(), order.stockId.toString())
+
+		tradeRepo.cancelSellOrder(orderId)
 	}
 
 }

@@ -7,7 +7,6 @@ import ca.uvictrades.trades.matching.port.SellLimitOrderResidue
 import ca.uvictrades.trades.matching.port.MatchingService as MatchingServiceInterface
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
-import java.time.Instant
 import java.util.*
 import kotlin.math.min
 
@@ -108,6 +107,21 @@ class MatchingService : MatchingServiceInterface {
 		}
 			.filter { (_, price) -> price > BigDecimal.ZERO }
 			.toMap()
+	}
+
+	override fun cancelOrder(withId: String, forStock: String) {
+		val stockQueue = sellOrders[forStock] ?: error("$forStock does not exist")
+
+		val (idMatch, idNotMatch) = generateSequence { stockQueue.poll() }
+			.partition { it.id == withId }
+
+		assert(idMatch.isNotEmpty()) { "did not find a sell order with id $withId" }
+		assert(idMatch.count() == 1) { "for some reason, there were more than one matching sell orders with id $withId" }
+
+		generateSequence { idNotMatch.firstOrNull() }
+			.forEach {
+				stockQueue.add(it)
+			}
 	}
 
 }

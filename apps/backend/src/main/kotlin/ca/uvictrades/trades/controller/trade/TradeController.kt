@@ -2,6 +2,7 @@ package ca.uvictrades.trades.controller.trade
 
 import ca.uvictrades.trades.configuration.JwtVerifier
 import ca.uvictrades.trades.controller.shared.SuccessTrueDataNull
+import ca.uvictrades.trades.controller.trade.requests.CancelStockTransactionRequest
 import ca.uvictrades.trades.service.TradeService
 import ca.uvictrades.trades.controller.trade.requests.PlaceStockOrderRequest
 import io.jsonwebtoken.JwtException
@@ -50,6 +51,22 @@ class TradeController(
 		}
 
 		return SuccessTrueDataNull()
+	}
+
+	@PostMapping("/engine/cancelStockTransaction")
+	fun cancelStockTransaction(
+		@RequestHeader("token") token: String,
+		@RequestBody body: CancelStockTransactionRequest
+	): SuccessTrueDataNull {
+		try {
+		    val username = jwtVerifier.verify(token)
+
+			tradeService.cancelOrder(body.stock_tx_id.toInt(), username)
+
+			return SuccessTrueDataNull()
+		} catch (e: JwtException) {
+			throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
+		}
 	}
 
 }
