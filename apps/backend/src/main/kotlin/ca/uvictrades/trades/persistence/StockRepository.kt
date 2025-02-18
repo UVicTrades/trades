@@ -13,6 +13,12 @@ import org.springframework.transaction.annotation.Transactional
 class StockRepository(
 	private val create: DSLContext,
 ) {
+	fun getStocksForIds(ids: Set<Int>): Set<StockRecord> {
+		return create.selectFrom(STOCK)
+			.where(STOCK.ID.`in`(ids))
+			.fetch()
+			.toSet()
+	}
 
 	fun createStock(name: String): StockRecord {
 		val stock = create.newRecord(STOCK).apply {

@@ -30,6 +30,7 @@ class MatchingService : MatchingServiceInterface {
 					sellOrders[stock] = it
 				}
 			}
+
 			else -> existingQueue
 		}
 
@@ -99,6 +100,14 @@ class MatchingService : MatchingServiceInterface {
 			.forEach {
 				into.add(it)
 			}
+	}
+
+	override fun getStockPrices(): Map<String, BigDecimal> {
+		return sellOrders.map { (stockId, queue) ->
+			stockId to (queue.peek()?.pricePerUnit ?: BigDecimal.ZERO)
+		}
+			.filter { (_, price) -> price > BigDecimal.ZERO }
+			.toMap()
 	}
 
 }

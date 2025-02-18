@@ -2,10 +2,12 @@ package ca.uvictrades.trades.controller.stock
 
 import ca.uvictrades.trades.configuration.JwtVerifier
 import ca.uvictrades.trades.controller.stock.responses.GetStockPortfolioResponse
+import ca.uvictrades.trades.controller.stock.responses.GetStockPricesResponse
 import ca.uvictrades.trades.controller.stock.responses.GetWalletBalanceResponse
 import ca.uvictrades.trades.controller.stock.responses.toGetPortfolioDataElement
 import ca.uvictrades.trades.persistence.StockRepository
 import ca.uvictrades.trades.persistence.WalletRepository
+import ca.uvictrades.trades.service.TradeService
 import io.jsonwebtoken.JwtException
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
@@ -18,6 +20,7 @@ class StockController(
 	private val walletRepo: WalletRepository,
 	private val jwtVerifier: JwtVerifier,
 	private val stockRepo: StockRepository,
+	private val tradeService: TradeService,
 ) {
 
 	@GetMapping("/transaction/getWalletBalance")
@@ -54,6 +57,23 @@ class StockController(
 		} catch (e: JwtException) {
 			TODO("Not yet implemented")
 		}
+	}
+
+	@GetMapping("/transaction/getStockPrices")
+	fun getStockPrices(
+		@RequestHeader("token") token: String,
+	): GetStockPricesResponse {
+		return GetStockPricesResponse(
+			data = tradeService
+				.getStockPrices()
+				.map {
+					GetStockPricesResponse.StockPriceResponseElement(
+						it.stockId.toString(),
+						it.stockName,
+						it.currentPrice,
+					)
+				}
+		)
 	}
 
 }

@@ -121,4 +121,24 @@ class TradeService(
 		matchingService.place(sellOrder)
 	}
 
+	fun getStockPrices(): List<StockPrice> {
+		val pricesFromMatching = matchingService.getStockPrices()
+
+		val stockRecords = stockRepo.getStocksForIds(pricesFromMatching.keys.map { it.toInt() }.toSet())
+
+		return pricesFromMatching.map { (stockId, price) ->
+			StockPrice(
+				stockId = stockId.toInt(),
+				stockName = stockRecords.find { it.id!! == stockId.toInt() }!!.name!!,
+				currentPrice = price,
+			)
+		}
+	}
+
 }
+
+data class StockPrice(
+	val stockId: Int,
+	val stockName: String,
+	val currentPrice: BigDecimal,
+)
