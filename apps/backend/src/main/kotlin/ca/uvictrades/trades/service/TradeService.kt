@@ -5,10 +5,8 @@ import ca.uvictrades.trades.matching.port.MatchingService
 import ca.uvictrades.trades.matching.port.PlaceBuyOrderResult
 import ca.uvictrades.trades.matching.port.SellLimitOrder
 import ca.uvictrades.trades.model.public.tables.SellOrder
-import ca.uvictrades.trades.persistence.SellOrderQuantity
-import ca.uvictrades.trades.persistence.StockRepository
-import ca.uvictrades.trades.persistence.TradeRepository
-import ca.uvictrades.trades.persistence.WalletRepository
+import ca.uvictrades.trades.model.public.tables.records.BuyOrderRecord
+import ca.uvictrades.trades.persistence.*
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.HttpClientErrorException.Unauthorized
@@ -146,6 +144,13 @@ class TradeService(
 		matchingService.cancelOrder(orderId.toString(), order.stockId.toString())
 
 		tradeRepo.cancelSellOrder(orderId)
+	}
+
+	fun getSellOrdersWithAssociatedBuys(username: String): List<SellOrderWithBuys> =
+		tradeRepo.getSellOrdersWithAssociatedBuys(username)
+
+	fun getBuyOrders(forTrader: String): List<BuyOrderWithStockIdAndWalletTxId> {
+		return tradeRepo.getBuyOrders(forTrader)
 	}
 
 }

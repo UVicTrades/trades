@@ -6,7 +6,13 @@ import ca.uvictrades.trades.model.public.tables.BuyOrder.Companion.BUY_ORDER
 import ca.uvictrades.trades.model.public.tables.records.BuyOrderSellOrderRecord
 import ca.uvictrades.trades.model.public.tables.records.SellOrderRecord
 import ca.uvictrades.trades.model.public.tables.references.BUY_ORDER_SELL_ORDER
+import ca.uvictrades.trades.model.public.tables.references.WALLET_TRANSACTION
+import ca.uvictrades.trades.persistence.SellOrderWithBuys.BuyOrder
 import org.jooq.DSLContext
+import org.jooq.Records
+import org.jooq.impl.DSL.multiset
+import org.jooq.impl.DSL.select
+import org.jooq.kotlin.mapping
 import org.springframework.stereotype.Repository
 import java.math.BigDecimal
 
@@ -89,9 +95,103 @@ class TradeRepository(
 		}
 	}
 
+	fun getSellOrdersWithAssociatedBuys(forTrader: String): List<SellOrderWithBuys> {
+		return create
+			.select(
+				SELL_ORDER.ID,
+				SELL_ORDER.STOCK_ID,
+				SELL_ORDER.QUANTITY,
+				SELL_ORDER.PRICE_PER_SHARE,
+				multiset(
+					select(
+						BUY_ORDER_SELL_ORDER.buyOrder().ID,
+						BUY_ORDER_SELL_ORDER.buyOrder().QUANTITY,
+						WALLET_TRANSACTION.ID,
+					)
+						.from(BUY_ORDER_SELL_ORDER)
+						.join(WALLET_TRANSACTION)
+						.on(WALLET_TRANSACTION.BUY_ORDER_ID.eq(BUY_ORDER_SELL_ORDER.BUY_ORDER_ID))
+						.where(WALLET_TRANSACTION.AMOUNT.gt(BigDecimal.ZERO))
+						.and(BUY_ORDER_SELL_ORDER.SELL_ORDER_ID.eq(SELL_ORDER.ID))
+				).convertFrom { it.map { record ->
+					BuyOrder(
+						record.value1()!!,
+						record.value2()!!,
+						record.value3()!!,
+					)
+				}},
+				SELL_ORDER.CANCELLED,
+			)
+			.from(SELL_ORDER)
+			.where(SELL_ORDER.TRADER.eq(forTrader))
+			.fetch().map { record ->
+				SellOrderWithBuys(
+					record.value1()!!,
+					record.value2()!!,
+					record.value3()!!,
+					record.value4()!!,
+					record.value5(),
+					record.value6()!!,
+				)
+			}
+	}
+
+	fun getBuyOrders(forTrader: String): List<BuyOrderWithStockIdAndWalletTxId> {
+		return create
+			.select(
+				BUY_ORDER.ID,
+				SELL_ORDER.STOCK_ID,
+				BUY_ORDER.TRADER,
+				BUY_ORDER.QUANTITY,
+				WALLET_TRANSACTION.ID,
+				SELL_ORDER.PRICE_PER_SHARE,
+			)
+			.from(BUY_ORDER)
+			.join(WALLET_TRANSACTION)
+			.on(WALLET_TRANSACTION.BUY_ORDER_ID.eq(BUY_ORDER.ID))
+			.join(BUY_ORDER_SELL_ORDER)
+			.on(BUY_ORDER.ID.eq(BUY_ORDER_SELL_ORDER.BUY_ORDER_ID))
+			.join(SELL_ORDER)
+			.on(BUY_ORDER_SELL_ORDER.SELL_ORDER_ID.eq(SELL_ORDER.ID))
+			.where(WALLET_TRANSACTION.AMOUNT.lt(BigDecimal.ZERO))
+			.fetch().map { record ->
+				BuyOrderWithStockIdAndWalletTxId(
+					record.value1()!!,
+					record.value2()!!,
+					record.value3()!!,
+					record.value4()!!,
+					record.value5()!!,
+					record.value6()!!,
+				)
+			}
+	}
 }
+
+data class BuyOrderWithStockIdAndWalletTxId(
+	val buyOrderId: Int,
+	val stockId: Int,
+	val trader: String,
+	val quantity: Int,
+	val walletTransactionId: Int,
+	val pricePerShare: BigDecimal,
+)
 
 data class SellOrderQuantity(
 	val sellOrderId: Int,
 	val quantity: Int,
 )
+
+data class SellOrderWithBuys(
+	val sellOrderId: Int,
+	val stockId: Int,
+	val quantity: Int,
+	val pricePerShare: BigDecimal,
+	val buyOrders: List<BuyOrder>,
+	val isCancelled: Boolean,
+) {
+	data class BuyOrder(
+		val buyOrderId: Int,
+		val quantity: Int,
+		val sellerWalletTransactionId: Int,
+	)
+}

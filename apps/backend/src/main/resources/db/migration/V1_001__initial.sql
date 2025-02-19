@@ -15,9 +15,12 @@ create table stock
     name text   not null
 );
 
+create sequence shared_order_seq start with 1 increment by 1;
+
 create table sell_order
 (
-    id              serial
+    id              integer
+        default nextval('shared_order_seq')
         constraint sell_order_pk
             primary key,
     stock_id        integer            not null
@@ -33,7 +36,8 @@ create table sell_order
 
 create table buy_order
 (
-    id            serial
+    id            integer
+        default nextval('shared_order_seq')
         constraint buy_order_pk
             primary key,
     trader        text    not null
