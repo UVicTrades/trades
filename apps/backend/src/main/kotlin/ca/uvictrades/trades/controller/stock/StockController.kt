@@ -1,10 +1,7 @@
 package ca.uvictrades.trades.controller.stock
 
 import ca.uvictrades.trades.configuration.JwtVerifier
-import ca.uvictrades.trades.controller.stock.responses.GetStockPortfolioResponse
-import ca.uvictrades.trades.controller.stock.responses.GetStockPricesResponse
-import ca.uvictrades.trades.controller.stock.responses.GetWalletBalanceResponse
-import ca.uvictrades.trades.controller.stock.responses.toGetPortfolioDataElement
+import ca.uvictrades.trades.controller.stock.responses.*
 import ca.uvictrades.trades.persistence.StockRepository
 import ca.uvictrades.trades.persistence.WalletRepository
 import ca.uvictrades.trades.service.TradeService
@@ -14,6 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
+import java.math.BigDecimal
+import java.time.Instant
+import java.time.ZoneOffset
 
 @RestController
 class StockController(
@@ -75,5 +75,33 @@ class StockController(
 				}
 		)
 	}
+
+	@GetMapping("/transaction/getWalletTransactions")
+	fun getWalletTransactions(
+		@RequestHeader("token") token: String,
+	): GetWalletTransactionsResponse {
+		try {
+		    val username = jwtVerifier.verify(token)
+
+			val responseElements = walletRepo.getWalletTransactionsAssociatedWithBuyOrder(username)
+				.map {
+					GetWalletTransactionsResponse.WalletTransactionResponseElement(
+						it.id!!.toString(),
+						it.buyOrderId!!.toString(),
+						it.amount!! < BigDecimal.ZERO,
+						it.amount!!.abs(),
+						Instant.now().atOffset(ZoneOffset.UTC),
+					)
+				}
+
+			return GetWalletTransactionsResponse(
+				data = responseElements,
+			)
+
+		} catch (e: JwtException) {
+			throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
+		}
+	}
+
 
 }
