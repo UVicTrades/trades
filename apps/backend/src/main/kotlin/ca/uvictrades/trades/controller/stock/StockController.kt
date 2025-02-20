@@ -91,7 +91,7 @@ class StockController(
 						it.buyOrderId!!.toString(),
 						it.amount!! < BigDecimal.ZERO,
 						it.amount!!.abs(),
-						Instant.now().atOffset(ZoneOffset.UTC),
+						it.timeStamp!!.atOffset(ZoneOffset.UTC),
 					)
 				}
 
@@ -145,7 +145,7 @@ class StockController(
 						order_type = GetStockTransactionsResponse.OrderType.LIMIT,
 						stock_price = sellOrder.pricePerShare,
 						quantity = sellOrder.quantity,
-						time_stamp = Instant.now().atOffset(ZoneOffset.UTC),
+						time_stamp = sellOrder.timestamp.atOffset(ZoneOffset.UTC),
 					)
 
 					responseElements.add(parentStockOrder)
@@ -163,7 +163,7 @@ class StockController(
 								order_type = GetStockTransactionsResponse.OrderType.LIMIT,
 								stock_price = sellOrder.pricePerShare,
 								quantity = buyOrder.quantity,
-								time_stamp = Instant.now().atOffset(ZoneOffset.UTC),
+								time_stamp = buyOrder.timestamp.atOffset(ZoneOffset.UTC),
 							)
 						}
 						.forEach {
@@ -191,7 +191,7 @@ class StockController(
 							order_type = GetStockTransactionsResponse.OrderType.LIMIT,
 							stock_price = sellOrder.pricePerShare,
 							quantity = sellOrder.quantity,
-							time_stamp = Instant.now().atOffset(ZoneOffset.UTC),
+							time_stamp = sellOrder.timestamp.atOffset(ZoneOffset.UTC),
 						)
 
 						responseElements.add(parentOrderResponse)
@@ -212,7 +212,7 @@ class StockController(
 							order_type = GetStockTransactionsResponse.OrderType.LIMIT,
 							stock_price = sellOrder.pricePerShare,
 							quantity = sellOrder.quantity,
-							time_stamp = Instant.now().atOffset(ZoneOffset.UTC),
+							time_stamp = sellOrder.timestamp.atOffset(ZoneOffset.UTC),
 						)
 
 						responseElements.add(parentOrderResponse)
@@ -234,7 +234,7 @@ class StockController(
 					order_type = GetStockTransactionsResponse.OrderType.MARKET,
 					stock_price = buyOrder.pricePerShare,
 					quantity = buyOrder.quantity,
-					time_stamp = Instant.now().atOffset(ZoneOffset.UTC),
+					time_stamp = buyOrder.timestamp.atOffset(ZoneOffset.UTC),
 				)
 
 				responseElements.add(element)

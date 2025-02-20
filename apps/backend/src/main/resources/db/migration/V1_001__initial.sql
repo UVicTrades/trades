@@ -31,7 +31,8 @@ create table sell_order
     trader          text               not null
         constraint sell_order_trader_id_fk
             references trader,
-    cancelled       bool default false not null
+    cancelled       bool default false not null,
+    time_stamp timestamp default current_timestamp
 );
 
 create table buy_order
@@ -43,7 +44,8 @@ create table buy_order
     trader        text    not null
         constraint buy_order_trader_username_fk
             references trader,
-    quantity      integer not null
+    quantity      integer not null,
+    time_stamp timestamp default current_timestamp
 );
 
 create table buy_order_sell_order
@@ -56,7 +58,8 @@ create table buy_order_sell_order
             references sell_order,
     quantity      integer not null,
     constraint buy_order_sell_order_pk
-        primary key (buy_order_id, sell_order_id)
+        primary key (buy_order_id, sell_order_id),
+    time_stamp timestamp default current_timestamp
 );
 
 comment on column buy_order_sell_order.quantity is 'How many shares in the sell order this buy order takes.';
@@ -74,7 +77,8 @@ create table wallet_transaction
     amount       numeric(16,2) not null,
     buy_order_id integer
         constraint wallet_transaction_buy_order_id_fk
-            references buy_order(id)
+            references buy_order(id),
+    time_stamp timestamp default current_timestamp
 );
 
 create table stock_holding

@@ -15,6 +15,8 @@ import org.jooq.impl.DSL.select
 import org.jooq.kotlin.mapping
 import org.springframework.stereotype.Repository
 import java.math.BigDecimal
+import java.time.Instant
+import java.time.LocalDateTime
 
 @Repository
 class TradeRepository(
@@ -102,11 +104,13 @@ class TradeRepository(
 				SELL_ORDER.STOCK_ID,
 				SELL_ORDER.QUANTITY,
 				SELL_ORDER.PRICE_PER_SHARE,
+				SELL_ORDER.TIME_STAMP,
 				multiset(
 					select(
 						BUY_ORDER_SELL_ORDER.buyOrder().ID,
 						BUY_ORDER_SELL_ORDER.buyOrder().QUANTITY,
 						WALLET_TRANSACTION.ID,
+						BUY_ORDER_SELL_ORDER.TIME_STAMP,
 					)
 						.from(BUY_ORDER_SELL_ORDER)
 						.join(WALLET_TRANSACTION)
@@ -118,6 +122,7 @@ class TradeRepository(
 						record.value1()!!,
 						record.value2()!!,
 						record.value3()!!,
+						record.value4()!!,
 					)
 				}},
 				SELL_ORDER.CANCELLED,
@@ -130,8 +135,9 @@ class TradeRepository(
 					record.value2()!!,
 					record.value3()!!,
 					record.value4()!!,
-					record.value5(),
-					record.value6()!!,
+					record.value6(),
+					record.value7()!!,
+					record.value5()!!,
 				)
 			}
 	}
@@ -145,6 +151,7 @@ class TradeRepository(
 				BUY_ORDER.QUANTITY,
 				WALLET_TRANSACTION.ID,
 				SELL_ORDER.PRICE_PER_SHARE,
+				BUY_ORDER.TIME_STAMP
 			)
 			.from(BUY_ORDER)
 			.join(WALLET_TRANSACTION)
@@ -162,6 +169,7 @@ class TradeRepository(
 					record.value4()!!,
 					record.value5()!!,
 					record.value6()!!,
+					record.value7()!!,
 				)
 			}
 	}
@@ -174,6 +182,7 @@ data class BuyOrderWithStockIdAndWalletTxId(
 	val quantity: Int,
 	val walletTransactionId: Int,
 	val pricePerShare: BigDecimal,
+	val timestamp: LocalDateTime,
 )
 
 data class SellOrderQuantity(
@@ -188,10 +197,12 @@ data class SellOrderWithBuys(
 	val pricePerShare: BigDecimal,
 	val buyOrders: List<BuyOrder>,
 	val isCancelled: Boolean,
+	val timestamp: LocalDateTime,
 ) {
 	data class BuyOrder(
 		val buyOrderId: Int,
 		val quantity: Int,
 		val sellerWalletTransactionId: Int,
+		val timestamp: LocalDateTime,
 	)
 }
