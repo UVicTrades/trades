@@ -9,4 +9,5 @@ data class SellLimitOrder(
 	val quantity: Int,
 	val pricePerUnit: BigDecimal,
 	val timestamp: Instant,
+	val trader: String
 )

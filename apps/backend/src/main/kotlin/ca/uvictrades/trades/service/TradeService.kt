@@ -33,7 +33,8 @@ class TradeService(
 		val order = BuyMarketOrder(
 			stockId.toString(),
 			quantity,
-			liquidity
+			liquidity,
+			trader,
 		)
 
 		val result = matchingService.place(order)
@@ -114,7 +115,8 @@ class TradeService(
 			stockId.toString(),
 			quantity,
 			pricePerShare,
-			Instant.now()
+			Instant.now(),
+			username,
 		)
 
 		matchingService.place(sellOrder)

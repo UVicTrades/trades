@@ -10,4 +10,5 @@ data class SellLimitOrderResidue(
 	val remainingQuantity: Int,
 	val pricePerUnit: BigDecimal,
 	val timestamp: Instant,
+	val trader: String
 )

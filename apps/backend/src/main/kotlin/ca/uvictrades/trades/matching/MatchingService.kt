@@ -44,13 +44,21 @@ class MatchingService : MatchingServiceInterface {
 
 		val residues: MutableList<SellLimitOrderResidue> = mutableListOf()
 		val contingency: Queue<SellLimitOrder> = LinkedList()
+		val selfTrade: Queue<SellLimitOrder> = LinkedList()
 
 		while (remainingUnits > 0) {
 			val matchedOrder: SellLimitOrder? = getSellOrdersForStock(order.stock).poll()
 
 			if (matchedOrder == null) {
 				reinsertSellOrders(contingency, getSellOrdersForStock(order.stock))
+				reinsertSellOrders(selfTrade, getSellOrdersForStock(order.stock))
 				return PlaceBuyOrderResult.Failure
+			}
+
+			if(order.trader == matchedOrder.trader) {
+				contingency.add(matchedOrder)
+				selfTrade.add(matchedOrder)
+				continue
 			}
 
 			contingency.add(matchedOrder)
@@ -63,6 +71,7 @@ class MatchingService : MatchingServiceInterface {
 
 			if (remainingLiquidity < BigDecimal.ZERO) {
 				reinsertSellOrders(contingency, getSellOrdersForStock(order.stock))
+				reinsertSellOrders(selfTrade, getSellOrdersForStock(order.stock))
 				return PlaceBuyOrderResult.Failure
 			}
 
@@ -73,6 +82,7 @@ class MatchingService : MatchingServiceInterface {
 				remainingQuantity = matchedOrder.quantity - matchedQuantity,
 				pricePerUnit = matchedOrder.pricePerUnit,
 				timestamp = matchedOrder.timestamp,
+				trader = matchedOrder.trader,
 			)
 
 			residues.add(residue)
@@ -87,9 +97,12 @@ class MatchingService : MatchingServiceInterface {
 						residue.remainingQuantity,
 						residue.pricePerUnit,
 						residue.timestamp,
+						residue.trader,
 					)
 				)
 			}
+
+		reinsertSellOrders(selfTrade, getSellOrdersForStock(order.stock))
 
 		return PlaceBuyOrderResult.Success(residues, remainingLiquidity)
 	}
