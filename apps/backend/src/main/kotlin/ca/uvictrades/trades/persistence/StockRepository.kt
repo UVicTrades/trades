@@ -16,6 +16,7 @@ class StockRepository(
 	fun getStocksForIds(ids: Set<Int>): Set<StockRecord> {
 		return create.selectFrom(STOCK)
 			.where(STOCK.ID.`in`(ids))
+			.orderBy(STOCK.NAME.desc())
 			.fetch()
 			.toSet()
 	}
@@ -76,6 +77,7 @@ class StockRepository(
 			.from(this)
 			.where(TRADER.eq(username))
 			.and(QUANTITY.gt(0))
+			.orderBy(stock().NAME.desc())
 			.fetch()
 			.map {
 				PortfolioItem(
@@ -90,6 +92,7 @@ class StockRepository(
 		return with (SELL_ORDER) {
 			create.selectFrom(this)
 				.where(ID.`in`(forIds))
+				.orderBy(TIME_STAMP)
 				.fetch()
 		}
 	}

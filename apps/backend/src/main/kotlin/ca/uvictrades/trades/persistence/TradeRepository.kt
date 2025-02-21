@@ -129,6 +129,7 @@ class TradeRepository(
 			)
 			.from(SELL_ORDER)
 			.where(SELL_ORDER.TRADER.eq(forTrader))
+			.orderBy(SELL_ORDER.TIME_STAMP)
 			.fetch().map { record ->
 				SellOrderWithBuys(
 					record.value1()!!,
@@ -162,6 +163,7 @@ class TradeRepository(
 			.on(BUY_ORDER_SELL_ORDER.SELL_ORDER_ID.eq(SELL_ORDER.ID))
 			.where(WALLET_TRANSACTION.AMOUNT.lt(BigDecimal.ZERO))
 			.and(BUY_ORDER.TRADER.eq(forTrader))
+			.orderBy(BUY_ORDER.TIME_STAMP)
 			.fetch().map { record ->
 				BuyOrderWithStockIdAndWalletTxId(
 					record.value1()!!,
