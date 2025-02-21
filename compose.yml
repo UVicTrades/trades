@@ -32,7 +32,7 @@ services:
     container_name: trade_backend
     restart: unless-stopped
     depends_on: []
-    ports: [ 80:8200 ] # Exposing backend on localhost:80
+    ports: [ 8080:8200 ] # Exposing backend on localhost:80
     environment:
       PORT: 8200
       DB_URL: jdbc:postgresql://database:5432/trade
