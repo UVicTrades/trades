@@ -84,6 +84,7 @@ class StockController(
 					it.timeStamp!!.atOffset(ZoneOffset.UTC),
 				)
 			}
+			.sortedBy { it.time_stamp }
 
 		return GetWalletTransactionsResponse(
 			data = responseElements,
@@ -225,10 +226,10 @@ class StockController(
 			responseElements.add(element)
 		}
 
-
+		val sortedResponseElements = responseElements.sortedBy { it.time_stamp }
 
 		return GetStockTransactionsResponse(
-			data = responseElements,
+			data = sortedResponseElements,
 		)
 	}
 
