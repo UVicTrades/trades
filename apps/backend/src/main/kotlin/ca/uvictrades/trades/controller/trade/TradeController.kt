@@ -25,29 +25,25 @@ class TradeController(
 		@RequestHeader("token") token: String,
 		@RequestBody body: PlaceStockOrderRequest
 	): SuccessTrueDataNull {
-		try {
-			val username = jwtVerifier.verify(token)
-			require(
-				(body.is_buy && body.order_type == PlaceStockOrderRequest.StockOrderType.MARKET && body.price == null)
-					|| (!body.is_buy && body.order_type == PlaceStockOrderRequest.StockOrderType.LIMIT && body.price != null)
-			) { "Invalid order" }
+		val username = jwtVerifier.verify(token)
+		require(
+			(body.is_buy && body.order_type == PlaceStockOrderRequest.StockOrderType.MARKET && body.price == null)
+				|| (!body.is_buy && body.order_type == PlaceStockOrderRequest.StockOrderType.LIMIT && body.price != null)
+		) { "Invalid order" }
 
-			if (body.is_buy) {
-				tradeService.placeBuyOrder(
-					username,
-					body.stock_id.toInt(),
-					body.quantity,
-				)
-			} else {
-				tradeService.placeSellOrder(
-					username,
-					body.stock_id.toInt(),
-					body.quantity,
-					body.price!!,
-				)
-			}
-		} catch (e: JwtException) {
-			throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
+		if (body.is_buy) {
+			tradeService.placeBuyOrder(
+				username,
+				body.stock_id.toInt(),
+				body.quantity,
+			)
+		} else {
+			tradeService.placeSellOrder(
+				username,
+				body.stock_id.toInt(),
+				body.quantity,
+				body.price!!,
+			)
 		}
 
 		return SuccessTrueDataNull()
@@ -58,15 +54,11 @@ class TradeController(
 		@RequestHeader("token") token: String,
 		@RequestBody body: CancelStockTransactionRequest
 	): SuccessTrueDataNull {
-		try {
-		    val username = jwtVerifier.verify(token)
+		val username = jwtVerifier.verify(token)
 
-			tradeService.cancelOrder(body.stock_tx_id.toInt(), username)
+		tradeService.cancelOrder(body.stock_tx_id.toInt(), username)
 
-			return SuccessTrueDataNull()
-		} catch (e: JwtException) {
-			throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
-		}
+		return SuccessTrueDataNull()
 	}
 
 }

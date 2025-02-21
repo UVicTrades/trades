@@ -29,16 +29,11 @@ class AdminController(
 		@RequestBody body: AddMoneyToWalletRequest,
 	): SuccessTrueDataNull {
 
-		try {
-			val username = jwtVerifier.verify(token)
+		val username = jwtVerifier.verify(token)
 
-			walletRepo.creditOrDebitTrader(username, body.amount)
+		walletRepo.creditOrDebitTrader(username, body.amount)
 
-			return SuccessTrueDataNull()
-		} catch (e: JwtException) {
-			// TODO: better error response
-			throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
-		}
+		return SuccessTrueDataNull()
 
 	}
 
@@ -48,11 +43,7 @@ class AdminController(
 		@RequestBody body: CreateStockRequest,
 	): CreateStockResponse {
 
-		try {
-			jwtVerifier.verify(token)
-		} catch (e: JwtException) {
-			throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
-		}
+		jwtVerifier.verify(token)
 
 		val record = stockRepo.createStock(body.stock_name)
 
@@ -70,15 +61,10 @@ class AdminController(
 		@RequestHeader("token") token: String,
 		@RequestBody body: AddStockToUserRequest,
 	): SuccessTrueDataNull {
-		try {
-			val username = jwtVerifier.verify(token)
+		val username = jwtVerifier.verify(token)
 
-			stockRepo.addStockToUser(username, body.stock_id.toInt(), body.quantity)
-			return SuccessTrueDataNull()
-		} catch (e: JwtException) {
-			throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
-			// TODO: better error response
-		}
+		stockRepo.addStockToUser(username, body.stock_id.toInt(), body.quantity)
+		return SuccessTrueDataNull()
 	}
 
 }

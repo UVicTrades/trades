@@ -28,36 +28,27 @@ class StockController(
 	fun getWalletBalance(
 		@RequestHeader("token") token: String,
 	): GetWalletBalanceResponse {
-		try {
-			val username = jwtVerifier.verify(token)
+		val username = jwtVerifier.verify(token)
 
-			val balance = walletRepo.getWalletBalance(username)
+		val balance = walletRepo.getWalletBalance(username)
 
-			return GetWalletBalanceResponse(
-				data = GetWalletBalanceResponse.Data(
-					balance = balance,
-				)
+		return GetWalletBalanceResponse(
+			data = GetWalletBalanceResponse.Data(
+				balance = balance,
 			)
-
-		} catch (e: JwtException) {
-			throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
-		}
+		)
 	}
 
 	@GetMapping("/transaction/getStockPortfolio")
 	fun getStockPortfolio(
 		@RequestHeader("token") token: String,
 	): GetStockPortfolioResponse {
-		try {
-			val username = jwtVerifier.verify(token)
-			val portfolio = stockRepo.getPortfolio(username)
+		val username = jwtVerifier.verify(token)
+		val portfolio = stockRepo.getPortfolio(username)
 
-			return GetStockPortfolioResponse(
-				data = portfolio.map { it.toGetPortfolioDataElement() }
-			)
-		} catch (e: JwtException) {
-			TODO("Not yet implemented")
-		}
+		return GetStockPortfolioResponse(
+			data = portfolio.map { it.toGetPortfolioDataElement() }
+		)
 	}
 
 	@GetMapping("/transaction/getStockPrices")
@@ -81,27 +72,22 @@ class StockController(
 	fun getWalletTransactions(
 		@RequestHeader("token") token: String,
 	): GetWalletTransactionsResponse {
-		try {
-		    val username = jwtVerifier.verify(token)
+		val username = jwtVerifier.verify(token)
 
-			val responseElements = walletRepo.getWalletTransactionsAssociatedWithBuyOrder(username)
-				.map {
-					GetWalletTransactionsResponse.WalletTransactionResponseElement(
-						it.id!!.toString(),
-						it.buyOrderId!!.toString(),
-						it.amount!! < BigDecimal.ZERO,
-						it.amount!!.abs(),
-						it.timeStamp!!.atOffset(ZoneOffset.UTC),
-					)
-				}
+		val responseElements = walletRepo.getWalletTransactionsAssociatedWithBuyOrder(username)
+			.map {
+				GetWalletTransactionsResponse.WalletTransactionResponseElement(
+					it.id!!.toString(),
+					it.buyOrderId!!.toString(),
+					it.amount!! < BigDecimal.ZERO,
+					it.amount!!.abs(),
+					it.timeStamp!!.atOffset(ZoneOffset.UTC),
+				)
+			}
 
-			return GetWalletTransactionsResponse(
-				data = responseElements,
-			)
-
-		} catch (e: JwtException) {
-			throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
-		}
+		return GetWalletTransactionsResponse(
+			data = responseElements,
+		)
 	}
 
 	@GetMapping("/transaction/getStockTransactions")
@@ -109,38 +95,83 @@ class StockController(
 		@RequestHeader("token") token: String,
 	): GetStockTransactionsResponse {
 //	): List<SellOrderWithBuys> {
-		try {
-			val username = jwtVerifier.verify(token)
-			val responseElements = mutableListOf<GetStockTransactionsResponse.ResponseElement>()
+		val username = jwtVerifier.verify(token)
+		val responseElements = mutableListOf<GetStockTransactionsResponse.ResponseElement>()
 
-			val sellOrders = tradeService.getSellOrdersWithAssociatedBuys(username)
+		val sellOrders = tradeService.getSellOrdersWithAssociatedBuys(username)
 
-			for (sellOrder in sellOrders) {
-				val sumOfQuantitiesOfAssociatedBuyOrders = sellOrder.buyOrders.sumOf { it.quantity }
+		for (sellOrder in sellOrders) {
+			val sumOfQuantitiesOfAssociatedBuyOrders = sellOrder.buyOrders.sumOf { it.quantity }
 
-				if (
-					sellOrder.buyOrders.count() > 1
-					|| (
-						sumOfQuantitiesOfAssociatedBuyOrders > 0
-						&& sumOfQuantitiesOfAssociatedBuyOrders < sellOrder.quantity
-					)
-				) {
-					// PARENT REGIME
+			if (
+				sellOrder.buyOrders.count() > 1
+				|| (
+					sumOfQuantitiesOfAssociatedBuyOrders > 0
+					&& sumOfQuantitiesOfAssociatedBuyOrders < sellOrder.quantity
+				)
+			) {
+				// PARENT REGIME
 
-					val order_status = if (sellOrder.isCancelled) {
-						GetStockTransactionsResponse.OrderStatus.CANCELLED
-					} else if (sumOfQuantitiesOfAssociatedBuyOrders < sellOrder.quantity) {
-						GetStockTransactionsResponse.OrderStatus.PARTIALLY_COMPLETE
-					} else {
-						GetStockTransactionsResponse.OrderStatus.COMPLETED
+				val order_status = if (sellOrder.isCancelled) {
+					GetStockTransactionsResponse.OrderStatus.CANCELLED
+				} else if (sumOfQuantitiesOfAssociatedBuyOrders < sellOrder.quantity) {
+					GetStockTransactionsResponse.OrderStatus.PARTIALLY_COMPLETE
+				} else {
+					GetStockTransactionsResponse.OrderStatus.COMPLETED
+				}
+
+				val parentStockOrder = GetStockTransactionsResponse.ResponseElement(
+					stock_tx_id = sellOrder.stockId.toString(),
+					parent_stock_tx_id = null,
+					stock_id = sellOrder.stockId.toString(),
+					wallet_tx_id = null,
+					order_status = order_status,
+					buy = false,
+					order_type = GetStockTransactionsResponse.OrderType.LIMIT,
+					stock_price = sellOrder.pricePerShare,
+					quantity = sellOrder.quantity,
+					time_stamp = sellOrder.timestamp.atOffset(ZoneOffset.UTC),
+				)
+
+				responseElements.add(parentStockOrder)
+
+				// we need to process the buy orders as their own COMPLETE elements, too.
+				sellOrder.buyOrders
+					.map { buyOrder ->
+						GetStockTransactionsResponse.ResponseElement(
+							stock_tx_id = buyOrder.buyOrderId.toString(),
+							parent_stock_tx_id = sellOrder.sellOrderId.toString(),
+							stock_id = sellOrder.stockId.toString(),
+							wallet_tx_id = buyOrder.sellerWalletTransactionId.toString(),
+							order_status = GetStockTransactionsResponse.OrderStatus.COMPLETED,
+							buy = false,
+							order_type = GetStockTransactionsResponse.OrderType.LIMIT,
+							stock_price = sellOrder.pricePerShare,
+							quantity = buyOrder.quantity,
+							time_stamp = buyOrder.timestamp.atOffset(ZoneOffset.UTC),
+						)
+					}
+					.forEach {
+						responseElements.add(it)
 					}
 
-					val parentStockOrder = GetStockTransactionsResponse.ResponseElement(
-						stock_tx_id = sellOrder.stockId.toString(),
+			} else {
+				// STANDALONE REGIME
+
+				if (sumOfQuantitiesOfAssociatedBuyOrders == 0) {
+					// sell order is IN_PROGRESS
+					val orderStatus = if (sellOrder.isCancelled) {
+						GetStockTransactionsResponse.OrderStatus.CANCELLED
+					} else {
+						GetStockTransactionsResponse.OrderStatus.IN_PROGRESS
+					}
+
+					val parentOrderResponse = GetStockTransactionsResponse.ResponseElement(
+						stock_tx_id = sellOrder.sellOrderId.toString(),
 						parent_stock_tx_id = null,
 						stock_id = sellOrder.stockId.toString(),
 						wallet_tx_id = null,
-						order_status = order_status,
+						order_status = orderStatus,
 						buy = false,
 						order_type = GetStockTransactionsResponse.OrderType.LIMIT,
 						stock_price = sellOrder.pricePerShare,
@@ -148,107 +179,57 @@ class StockController(
 						time_stamp = sellOrder.timestamp.atOffset(ZoneOffset.UTC),
 					)
 
-					responseElements.add(parentStockOrder)
-
-					// we need to process the buy orders as their own COMPLETE elements, too.
-					sellOrder.buyOrders
-						.map { buyOrder ->
-							GetStockTransactionsResponse.ResponseElement(
-								stock_tx_id = buyOrder.buyOrderId.toString(),
-								parent_stock_tx_id = sellOrder.sellOrderId.toString(),
-								stock_id = sellOrder.stockId.toString(),
-								wallet_tx_id = buyOrder.sellerWalletTransactionId.toString(),
-								order_status = GetStockTransactionsResponse.OrderStatus.COMPLETED,
-								buy = false,
-								order_type = GetStockTransactionsResponse.OrderType.LIMIT,
-								stock_price = sellOrder.pricePerShare,
-								quantity = buyOrder.quantity,
-								time_stamp = buyOrder.timestamp.atOffset(ZoneOffset.UTC),
-							)
-						}
-						.forEach {
-							responseElements.add(it)
-						}
-
+					responseElements.add(parentOrderResponse)
 				} else {
-					// STANDALONE REGIME
-
-					if (sumOfQuantitiesOfAssociatedBuyOrders == 0) {
-						// sell order is IN_PROGRESS
-						val orderStatus = if (sellOrder.isCancelled) {
-							GetStockTransactionsResponse.OrderStatus.CANCELLED
-						} else {
-							GetStockTransactionsResponse.OrderStatus.IN_PROGRESS
-						}
-
-						val parentOrderResponse = GetStockTransactionsResponse.ResponseElement(
-							stock_tx_id = sellOrder.sellOrderId.toString(),
-							parent_stock_tx_id = null,
-							stock_id = sellOrder.stockId.toString(),
-							wallet_tx_id = null,
-							order_status = orderStatus,
-							buy = false,
-							order_type = GetStockTransactionsResponse.OrderType.LIMIT,
-							stock_price = sellOrder.pricePerShare,
-							quantity = sellOrder.quantity,
-							time_stamp = sellOrder.timestamp.atOffset(ZoneOffset.UTC),
-						)
-
-						responseElements.add(parentOrderResponse)
+					val orderStatus = if (sellOrder.isCancelled) {
+						GetStockTransactionsResponse.OrderStatus.CANCELLED
 					} else {
-						val orderStatus = if (sellOrder.isCancelled) {
-							GetStockTransactionsResponse.OrderStatus.CANCELLED
-						} else {
-							GetStockTransactionsResponse.OrderStatus.COMPLETED
-						}
-
-						val parentOrderResponse = GetStockTransactionsResponse.ResponseElement(
-							stock_tx_id = sellOrder.sellOrderId.toString(),
-							parent_stock_tx_id = null,
-							stock_id = sellOrder.stockId.toString(),
-							wallet_tx_id = sellOrder.buyOrders.first().sellerWalletTransactionId.toString(),
-							order_status = orderStatus,
-							buy = false,
-							order_type = GetStockTransactionsResponse.OrderType.LIMIT,
-							stock_price = sellOrder.pricePerShare,
-							quantity = sellOrder.quantity,
-							time_stamp = sellOrder.timestamp.atOffset(ZoneOffset.UTC),
-						)
-
-						responseElements.add(parentOrderResponse)
+						GetStockTransactionsResponse.OrderStatus.COMPLETED
 					}
+
+					val parentOrderResponse = GetStockTransactionsResponse.ResponseElement(
+						stock_tx_id = sellOrder.sellOrderId.toString(),
+						parent_stock_tx_id = null,
+						stock_id = sellOrder.stockId.toString(),
+						wallet_tx_id = sellOrder.buyOrders.first().sellerWalletTransactionId.toString(),
+						order_status = orderStatus,
+						buy = false,
+						order_type = GetStockTransactionsResponse.OrderType.LIMIT,
+						stock_price = sellOrder.pricePerShare,
+						quantity = sellOrder.quantity,
+						time_stamp = sellOrder.timestamp.atOffset(ZoneOffset.UTC),
+					)
+
+					responseElements.add(parentOrderResponse)
 				}
-
 			}
 
-			val buyOrders = tradeService.getBuyOrders(username)
+		}
 
-			for (buyOrder in buyOrders) {
-				val element = GetStockTransactionsResponse.ResponseElement(
-					stock_tx_id = buyOrder.buyOrderId.toString(),
-					parent_stock_tx_id = null,
-					stock_id = buyOrder.stockId.toString(),
-					wallet_tx_id = buyOrder.walletTransactionId.toString(),
-					order_status = GetStockTransactionsResponse.OrderStatus.COMPLETED,
-					buy = true,
-					order_type = GetStockTransactionsResponse.OrderType.MARKET,
-					stock_price = buyOrder.pricePerShare,
-					quantity = buyOrder.quantity,
-					time_stamp = buyOrder.timestamp.atOffset(ZoneOffset.UTC),
-				)
+		val buyOrders = tradeService.getBuyOrders(username)
 
-				responseElements.add(element)
-			}
-
-
-
-			return GetStockTransactionsResponse(
-				data = responseElements,
+		for (buyOrder in buyOrders) {
+			val element = GetStockTransactionsResponse.ResponseElement(
+				stock_tx_id = buyOrder.buyOrderId.toString(),
+				parent_stock_tx_id = null,
+				stock_id = buyOrder.stockId.toString(),
+				wallet_tx_id = buyOrder.walletTransactionId.toString(),
+				order_status = GetStockTransactionsResponse.OrderStatus.COMPLETED,
+				buy = true,
+				order_type = GetStockTransactionsResponse.OrderType.MARKET,
+				stock_price = buyOrder.pricePerShare,
+				quantity = buyOrder.quantity,
+				time_stamp = buyOrder.timestamp.atOffset(ZoneOffset.UTC),
 			)
 
-		} catch (e: JwtException) {
-			throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
+			responseElements.add(element)
 		}
+
+
+
+		return GetStockTransactionsResponse(
+			data = responseElements,
+		)
 	}
 
 }
