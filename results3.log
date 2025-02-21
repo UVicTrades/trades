@@ -1,0 +1,30 @@
+timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect
+1740118159061,133,1 Register Request,500,,User 1 Thread 1-1,text,false,"Value in json path '$.success' expected to match regexp 'true', but it did not match: 'false'",379,267,1,1,http://localhost:8080/authentication/register,128,0,22
+1740118159727,98,2 Failed Register Request,500,,User 1 Thread 1-1,text,false,,379,266,1,1,http://localhost:8080/authentication/register,98,0,2
+1740118160327,97,3 Failed Login Request,500,,User 1 Thread 1-1,text,false,,379,240,1,1,http://localhost:8080/authentication/login,97,0,2
+1740118160927,106,4 Login Request,200,,User 1 Thread 1-1,text,true,,539,239,1,1,http://localhost:8080/authentication/login,106,0,1
+1740118161539,17,5 Create Google Stock Request,200,,User 1 Thread 1-1,text,true,,383,378,1,1,http://localhost:8080/setup/createStock,17,0,0
+1740118162058,35,6 Add Google Stock Request,200,,User 1 Thread 1-1,text,true,,371,391,1,1,http://localhost:8080/setup/addStockToUser,35,0,0
+1740118162595,67,7 Create Apple Stock Request,200,,User 1 Thread 1-1,text,true,,383,377,1,1,http://localhost:8080/setup/createStock,67,0,0
+1740118163165,19,8 Add Apple Stock Request,200,,User 1 Thread 1-1,text,true,,371,391,1,1,http://localhost:8080/setup/addStockToUser,18,0,0
+1740118163686,17,9 Get Stock Portfolio Request,200,,User 1 Thread 1-1,text,false,,726,346,1,1,http://localhost:8080/transaction/getStockPortfolio,17,0,0
+1740118164211,13,10 Place Stock Order Request,400,,User 1 Thread 1-1,text,false,"Value in json path '$.success' expected to match regexp 'true', but it did not match: 'false'",385,444,1,1,http://localhost:8080/engine/placeStockOrder,13,0,0
+1740118164726,14,11 Place Stock Order Request,400,,User 1 Thread 1-1,text,false,"Value in json path '$.success' expected to match regexp 'true', but it did not match: 'false'",385,444,1,1,http://localhost:8080/engine/placeStockOrder,14,0,2
+1740118165242,20,12 Get Stock Portfolio Request,200,,User 1 Thread 1-1,text,false,,726,346,1,1,http://localhost:8080/transaction/getStockPortfolio,20,0,2
+1740118165766,23,13 Get Stock Transactions Request,200,,User 1 Thread 1-1,text,false,,369,349,1,1,http://localhost:8080/transaction/getStockTransactions,22,0,0
+1740118165820,3,Debug Sampler,200,OK,User 1 Thread 1-1,text,true,,1192,0,1,1,null,0,0,0
+1740118166324,96,14 Register Request,500,,User 1 Thread 1-1,text,false,"Value in json path '$.success' expected to match regexp 'true', but it did not match: 'false'",379,271,1,1,http://localhost:8080/authentication/register,96,0,0
+1740118166923,97,15 Login Request,200,,User 1 Thread 1-1,text,true,,539,241,1,1,http://localhost:8080/authentication/login,97,0,1
+1740118167522,12,16 Get Stock Prices Request,200,,User 1 Thread 1-1,text,false,,369,343,1,1,http://localhost:8080/transaction/getStockPrices,12,0,0
+1740118168038,17,17 Add Money Request,200,,User 1 Thread 1-1,text,true,,371,382,1,1,http://localhost:8080/transaction/addMoneyToWallet,17,0,0
+1740118168557,13,18 Get Wallet Balance Request,200,,User 1 Thread 1-1,text,false,,387,345,1,1,http://localhost:8080/transaction/getWalletBalance,12,0,0
+1740118169073,12,19 Place Stock Order Request,400,,User 1 Thread 1-1,text,false,"Value in json path '$.success' expected to match regexp 'true', but it did not match: 'false'",385,429,1,1,http://localhost:8080/engine/placeStockOrder,12,0,0
+1740118169587,22,20 Get Stock Transactions Request,200,,User 1 Thread 1-1,text,false,,369,349,1,1,http://localhost:8080/transaction/getStockTransactions,21,0,2
+1740118170113,15,21 Get Wallet Transactions Request,200,,User 1 Thread 1-1,text,false,,369,350,1,1,http://localhost:8080/transaction/getWalletTransactions,15,0,0
+1740118170635,15,22 Get Wallet Balance Request,200,,User 1 Thread 1-1,text,false,,387,345,1,1,http://localhost:8080/transaction/getWalletBalance,15,0,0
+1740118171153,14,23 Get Stock Portfolio Request,200,,User 1 Thread 1-1,text,false,,369,346,1,1,http://localhost:8080/transaction/getStockPortfolio,13,0,0
+1740118171168,3,Debug Sampler,200,OK,User 1 Thread 1-1,text,true,,1468,0,1,1,null,0,0,0
+1740118171673,11,24 Cancel Stock Order Request,400,,User 1 Thread 1-1,text,false,"Value in json path '$.success' expected to match regexp 'true', but it did not match: 'false'",373,385,1,1,http://localhost:8080/engine/cancelStockTransaction,10,0,0
+1740118172186,19,25 Get Stock Transactions Request,200,,User 1 Thread 1-1,text,false,,369,349,1,1,http://localhost:8080/transaction/getStockTransactions,19,0,2
+1740118172707,9,26 Invalid Token,401,,User 1 Thread 1-1,text,true,,404,222,1,1,http://localhost:8080/transaction/getStockPortfolio,9,0,0
+1740118173218,27,27 Invalid Payload Example,200,,User 1 Thread 1-1,text,false,"Value in json path '$.success' expected to match regexp 'false', but it did not match: 'true'",371,383,1,1,http://localhost:8080/transaction/addMoneyToWallet,27,0,0
