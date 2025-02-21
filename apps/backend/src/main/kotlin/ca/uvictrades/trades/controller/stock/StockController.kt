@@ -229,7 +229,7 @@ class StockController(
 		val sortedResponseElements = responseElements.sortedBy { it.time_stamp }
 
 		return GetStockTransactionsResponse(
-			data = sortedResponseElements,
+			data = sortedResponseElements.sortedBy { it.time_stamp },
 		)
 	}
 
