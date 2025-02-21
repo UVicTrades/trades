@@ -1,13 +1,19 @@
+networks:
+  trade_network:
+    driver: bridge
+
 services:
-  frontend:
-    build:
-      context: apps/frontend
-    restart: unless-stopped
-    depends_on: []
-    volumes: [ ./apps/frontend/src:/app/src ]
-    ports: [ 8100:8100 ]
-    environment:
-      PORT: 8100
+  # frontend:
+  #   build:
+  #     context: apps/frontend
+  #   restart: unless-stopped
+  #   depends_on: []
+  #   volumes: [ ./apps/frontend/src:/app/src ]
+  #   ports: [ 8100:8100 ]
+  #   environment:
+  #     PORT: 8100
+  #   networks:
+  #     - trade_network
 
   # proxy:
   #   build: apps/proxy
@@ -17,6 +23,8 @@ services:
   #   volumes: [ ./apps/proxy:/app ]
   #   environment: []
   #   ports: [ 80:80, 443:443 ]
+  #   networks:
+  #     - trade_network
 
   backend:
     build:
@@ -24,12 +32,14 @@ services:
     container_name: trade_backend
     restart: unless-stopped
     depends_on: []
-    ports: [ 8200:8200 ]
+    ports: [ 80:8200 ] # Exposing backend on localhost:80
     environment:
       PORT: 8200
       DB_URL: jdbc:postgresql://database:5432/trade
       DB_USERNAME: trade
       DB_PASSWORD: trade
+    networks:
+      - trade_network
 
   database:
     image: timescale/timescaledb-ha:pg17
@@ -43,3 +53,5 @@ services:
       - POSTGRES_USER=trade
       - POSTGRES_PASSWORD=trade
       - POSTGRES_DB=trade
+    networks:
+      - trade_network
