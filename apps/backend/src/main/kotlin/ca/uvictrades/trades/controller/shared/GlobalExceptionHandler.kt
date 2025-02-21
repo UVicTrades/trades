@@ -10,6 +10,22 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 @RestControllerAdvice
 class GlobalExceptionHandler {
 
+	@ExceptionHandler(IllegalArgumentException::class)
+	fun handleIllegalArgumentException(ex: IllegalArgumentException): ResponseEntity<SuccessTrueDataNull> {
+		val errorMessage = ex.message ?: ""
+
+		return ResponseEntity
+			.status(HttpStatus.BAD_REQUEST)
+			.body(
+				SuccessTrueDataNull(
+					success = false,
+					data = SuccessTrueDataNull.Error(
+						error = errorMessage
+					)
+				)
+			)
+	}
+
 	@ExceptionHandler(MethodArgumentNotValidException::class)
 	fun handleValidationException(ex: MethodArgumentNotValidException): ResponseEntity<SuccessTrueDataNull> {
 		val errorMessage = ex.bindingResult.fieldErrors

@@ -26,10 +26,10 @@ class TradeController(
 		@RequestBody body: PlaceStockOrderRequest
 	): SuccessTrueDataNull {
 		val username = jwtVerifier.verify(token)
-		require(
+		if(
 			(body.is_buy && body.order_type == PlaceStockOrderRequest.StockOrderType.MARKET && body.price == null)
 				|| (!body.is_buy && body.order_type == PlaceStockOrderRequest.StockOrderType.LIMIT && body.price != null)
-		) { "Invalid order" }
+		) { throw IllegalArgumentException("Bad combo of sell/buy market/limit") }
 
 		if (body.is_buy) {
 			tradeService.placeBuyOrder(
