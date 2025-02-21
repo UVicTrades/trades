@@ -2,8 +2,10 @@ package ca.uvictrades.trades.service
 
 import ca.uvictrades.trades.model.public.tables.records.TraderRecord
 import ca.uvictrades.trades.persistence.TraderRepository
+import org.springframework.http.HttpStatus
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
+import org.springframework.web.server.ResponseStatusException
 import java.math.BigDecimal
 
 @Component
@@ -35,7 +37,7 @@ class TraderService(
         if (passwordEncoder.matches(password, trader.password)) {
             return trader
         } else {
-            throw IllegalArgumentException("Invalid credentials")
+			throw ResponseStatusException(HttpStatus.BAD_REQUEST)
         }
     }
 
