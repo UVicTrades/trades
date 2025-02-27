@@ -34,7 +34,7 @@ class StockController(
 
 		return GetWalletBalanceResponse(
 			data = GetWalletBalanceResponse.Data(
-				balance = balance,
+				balance = balance.toInt(),
 			)
 		)
 	}
@@ -62,7 +62,7 @@ class StockController(
 					GetStockPricesResponse.StockPriceResponseElement(
 						it.stockId.toString(),
 						it.stockName,
-						it.currentPrice,
+						it.currentPrice.toInt(),
 					)
 				}
 		)
@@ -80,7 +80,7 @@ class StockController(
 					it.id!!.toString(),
 					it.buyOrderId!!.toString(),
 					it.amount!! < BigDecimal.ZERO,
-					it.amount!!.abs(),
+					it.amount!!.abs().toInt(),
 					it.timeStamp!!.atOffset(ZoneOffset.UTC),
 				)
 			}
@@ -129,7 +129,7 @@ class StockController(
 					order_status = order_status,
 					buy = false,
 					order_type = GetStockTransactionsResponse.OrderType.LIMIT,
-					stock_price = sellOrder.pricePerShare,
+					stock_price = sellOrder.pricePerShare.toInt(),
 					quantity = sellOrder.quantity,
 					time_stamp = sellOrder.timestamp.atOffset(ZoneOffset.UTC),
 				)
@@ -147,7 +147,7 @@ class StockController(
 							order_status = GetStockTransactionsResponse.OrderStatus.COMPLETED,
 							buy = false,
 							order_type = GetStockTransactionsResponse.OrderType.LIMIT,
-							stock_price = sellOrder.pricePerShare,
+							stock_price = sellOrder.pricePerShare.toInt(),
 							quantity = buyOrder.quantity,
 							time_stamp = buyOrder.timestamp.atOffset(ZoneOffset.UTC),
 						)
@@ -175,7 +175,7 @@ class StockController(
 						order_status = orderStatus,
 						buy = false,
 						order_type = GetStockTransactionsResponse.OrderType.LIMIT,
-						stock_price = sellOrder.pricePerShare,
+						stock_price = sellOrder.pricePerShare.toInt(),
 						quantity = sellOrder.quantity,
 						time_stamp = sellOrder.timestamp.atOffset(ZoneOffset.UTC),
 					)
@@ -196,7 +196,7 @@ class StockController(
 						order_status = orderStatus,
 						buy = false,
 						order_type = GetStockTransactionsResponse.OrderType.LIMIT,
-						stock_price = sellOrder.pricePerShare,
+						stock_price = sellOrder.pricePerShare.toInt(),
 						quantity = sellOrder.quantity,
 						time_stamp = sellOrder.timestamp.atOffset(ZoneOffset.UTC),
 					)
@@ -218,7 +218,7 @@ class StockController(
 				order_status = GetStockTransactionsResponse.OrderStatus.COMPLETED,
 				buy = true,
 				order_type = GetStockTransactionsResponse.OrderType.MARKET,
-				stock_price = buyOrder.pricePerShare,
+				stock_price = buyOrder.pricePerShare.toInt(),
 				quantity = buyOrder.quantity,
 				time_stamp = buyOrder.timestamp.atOffset(ZoneOffset.UTC),
 			)
