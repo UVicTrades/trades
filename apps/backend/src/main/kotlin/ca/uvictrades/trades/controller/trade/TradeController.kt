@@ -27,8 +27,8 @@ class TradeController(
 	): SuccessTrueDataNull {
 		val username = jwtVerifier.verify(token)
 		if(
-			(body.is_buy && body.order_type == PlaceStockOrderRequest.StockOrderType.MARKET && body.price == null)
-				|| (!body.is_buy && body.order_type == PlaceStockOrderRequest.StockOrderType.LIMIT && body.price != null)
+			!(body.is_buy && body.order_type == PlaceStockOrderRequest.StockOrderType.MARKET && body.price == null)
+				&& !(!body.is_buy && body.order_type == PlaceStockOrderRequest.StockOrderType.LIMIT && body.price != null)
 		) { throw IllegalArgumentException("Bad combo of sell/buy market/limit") }
 
 		if (body.is_buy) {

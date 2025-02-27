@@ -7,6 +7,6 @@ data class GetWalletBalanceResponse(
 	val data: Data,
 ) {
 	data class Data(
-		val balance: BigDecimal,
+		val balance: Int,
 	)
 }

@@ -9,6 +9,6 @@ data class GetStockPricesResponse(
 	data class StockPriceResponseElement(
 		val stock_id: String,
 		val stock_name: String,
-		val current_price: BigDecimal,
+		val current_price: Int,
 	)
 }

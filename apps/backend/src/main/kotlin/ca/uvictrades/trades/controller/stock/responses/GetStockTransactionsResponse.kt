@@ -17,7 +17,7 @@ data class GetStockTransactionsResponse(
 		@field:JsonProperty("is_buy")
 		val buy: Boolean,
 		val order_type: OrderType,
-		val stock_price: BigDecimal,
+		val stock_price: Int,
 		val quantity: Int,
 		val time_stamp: OffsetDateTime,
 	)

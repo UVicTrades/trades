@@ -13,7 +13,7 @@ data class GetWalletTransactionsResponse(
 		val stock_tx_id: String,
 		@field:JsonProperty("is_debit")
 		val debit: Boolean,
-		val amount: BigDecimal,
+		val amount: Int,
 		val time_stamp: OffsetDateTime,
 	)
 }
