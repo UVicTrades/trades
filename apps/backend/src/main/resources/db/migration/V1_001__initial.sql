@@ -26,7 +26,7 @@ create table sell_order
     stock_id        integer            not null
         constraint sell_order_stock_id_fk
             references stock (id),
-    quantity        integer            not null,
+    quantity        numeric(16,0)            not null,
     price_per_share decimal(16,2)      not null,
     trader          text               not null
         constraint sell_order_trader_id_fk
@@ -44,7 +44,7 @@ create table buy_order
     trader        text    not null
         constraint buy_order_trader_username_fk
             references trader,
-    quantity      integer not null,
+    quantity      numeric(16,0) not null,
     time_stamp timestamp default current_timestamp
 );
 
@@ -56,7 +56,7 @@ create table buy_order_sell_order
     sell_order_id integer not null
         constraint buy_order_sell_order_sell_order_id_fk
             references sell_order,
-    quantity      integer not null,
+    quantity      numeric(16,0) not null,
     constraint buy_order_sell_order_pk
         primary key (buy_order_id, sell_order_id),
     time_stamp timestamp default current_timestamp
@@ -89,7 +89,7 @@ create table stock_holding
     stock    integer not null
         constraint stock_holding_stock_id_fk
             references stock,
-    quantity integer not null,
+    quantity numeric(16, 0) not null,
     constraint stock_holding_pk
         primary key (trader, stock)
 );

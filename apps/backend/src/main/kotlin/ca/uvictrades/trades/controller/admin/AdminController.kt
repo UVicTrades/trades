@@ -8,13 +8,10 @@ import ca.uvictrades.trades.controller.admin.responses.CreateStockResponse
 import ca.uvictrades.trades.controller.shared.SuccessTrueDataNull
 import ca.uvictrades.trades.persistence.StockRepository
 import ca.uvictrades.trades.persistence.WalletRepository
-import io.jsonwebtoken.JwtException
-import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.server.ResponseStatusException
 
 @RestController
 class AdminController(

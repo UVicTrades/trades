@@ -7,6 +7,7 @@ import ca.uvictrades.trades.matching.port.SellLimitOrderResidue
 import ca.uvictrades.trades.matching.port.MatchingService as MatchingServiceInterface
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
+import java.math.BigInteger
 import java.util.*
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.math.min
@@ -69,7 +70,7 @@ class MatchingService : MatchingServiceInterface {
 		val contingency: Queue<SellLimitOrder> = LinkedList()
 		val selfTrade: Queue<SellLimitOrder> = LinkedList()
 
-		while (remainingUnits > 0) {
+		while (remainingUnits > BigInteger.ZERO) {
 			val matchedOrder: SellLimitOrder? = getSellOrdersForStock(order.stock).poll()
 
 			if (matchedOrder == null) {
@@ -86,7 +87,7 @@ class MatchingService : MatchingServiceInterface {
 
 			contingency.add(matchedOrder)
 
-			val matchedQuantity = min(matchedOrder.quantity, remainingUnits)
+			val matchedQuantity = matchedOrder.quantity.min(remainingUnits)
 			remainingUnits -= matchedQuantity
 			val matchedPrice = BigDecimal(matchedQuantity) * matchedOrder.pricePerUnit
 
@@ -111,7 +112,7 @@ class MatchingService : MatchingServiceInterface {
 			residues.add(residue)
 		}
 
-		residues.filter { it.remainingQuantity > 0 }
+		residues.filter { it.remainingQuantity > BigInteger.ZERO }
 			.forEach { residue ->
 				getSellOrdersForStock(order.stock).add(
 					SellLimitOrder(

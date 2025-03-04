@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
 import java.math.BigDecimal
+import java.math.BigInteger
 import java.time.Instant
 import java.time.ZoneOffset
 
@@ -107,7 +108,7 @@ class StockController(
 			if (
 				sellOrder.buyOrders.count() > 1
 				|| (
-					sumOfQuantitiesOfAssociatedBuyOrders > 0
+					sumOfQuantitiesOfAssociatedBuyOrders > BigInteger.ZERO
 					&& sumOfQuantitiesOfAssociatedBuyOrders < sellOrder.quantity
 				)
 			) {
@@ -159,7 +160,7 @@ class StockController(
 			} else {
 				// STANDALONE REGIME
 
-				if (sumOfQuantitiesOfAssociatedBuyOrders == 0) {
+				if (sumOfQuantitiesOfAssociatedBuyOrders == BigInteger.ZERO) {
 					// sell order is IN_PROGRESS
 					val orderStatus = if (sellOrder.isCancelled) {
 						GetStockTransactionsResponse.OrderStatus.CANCELLED
