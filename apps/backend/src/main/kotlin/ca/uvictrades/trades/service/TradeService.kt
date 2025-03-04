@@ -4,15 +4,12 @@ import ca.uvictrades.trades.matching.port.BuyMarketOrder
 import ca.uvictrades.trades.matching.port.MatchingService
 import ca.uvictrades.trades.matching.port.PlaceBuyOrderResult
 import ca.uvictrades.trades.matching.port.SellLimitOrder
-import ca.uvictrades.trades.model.public.tables.SellOrder
-import ca.uvictrades.trades.model.public.tables.records.BuyOrderRecord
 import ca.uvictrades.trades.persistence.*
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.client.HttpClientErrorException.Unauthorized
 import java.math.BigDecimal
+import java.math.BigInteger
 import java.time.Instant
-import kotlin.time.times
 
 @Component
 class TradeService(
@@ -26,7 +23,7 @@ class TradeService(
 	fun placeBuyOrder(
 		trader: String,
 		stockId: Int,
-		quantity: Int,
+		quantity: BigInteger,
 	) {
 		val liquidity = walletRepo.getWalletBalance(trader)
 
@@ -88,10 +85,10 @@ class TradeService(
 
 	}
 
-	fun placeSellOrder(username: String, stockId: Int, quantity: Int, pricePerShare: BigDecimal) {
+	fun placeSellOrder(username: String, stockId: Int, quantity: BigInteger, pricePerShare: BigDecimal) {
 		val availableShares = stockRepo.getPortfolio(username)
 			.find { it.stockId == stockId }
-			?.quantity ?: 0
+			?.quantity ?: BigInteger.ZERO
 
 		if (availableShares < quantity) {
 			error("Not enough stock available in portfolio to make this sell order")

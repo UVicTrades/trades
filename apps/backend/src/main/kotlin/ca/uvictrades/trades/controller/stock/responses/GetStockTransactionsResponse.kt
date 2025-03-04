@@ -2,6 +2,7 @@ package ca.uvictrades.trades.controller.stock.responses
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.math.BigDecimal
+import java.math.BigInteger
 import java.time.OffsetDateTime
 
 data class GetStockTransactionsResponse(
@@ -18,7 +19,7 @@ data class GetStockTransactionsResponse(
 		val buy: Boolean,
 		val order_type: OrderType,
 		val stock_price: Int,
-		val quantity: Int,
+		val quantity: BigInteger,
 		val time_stamp: OffsetDateTime,
 	)
 

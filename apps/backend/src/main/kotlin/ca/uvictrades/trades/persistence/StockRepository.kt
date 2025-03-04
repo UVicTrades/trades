@@ -8,6 +8,8 @@ import ca.uvictrades.trades.model.public.tables.references.STOCK_HOLDING
 import org.jooq.DSLContext
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
+import java.math.BigDecimal
+import java.math.BigInteger
 
 @Repository
 class StockRepository(
@@ -31,12 +33,12 @@ class StockRepository(
 		return stock
 	}
 
-	fun addStockToUser(username: String, stockId: Int, quantity: Int) {
+	fun addStockToUser(username: String, stockId: Int, quantity: BigInteger) {
 		with(STOCK_HOLDING) {
 			create.insertInto(this)
 				.set(TRADER, username)
 				.set(STOCK, stockId)
-				.set(QUANTITY, quantity)
+				.set(QUANTITY, quantity.toLong())
 				.onConflict(TRADER, STOCK)
 				.doUpdate()
 				.set(QUANTITY, QUANTITY.plus(quantity))
@@ -48,13 +50,13 @@ class StockRepository(
 	fun subtractStockFromUser(
 		username: String,
 		stockId: Int,
-		quantityToSubtract: Int
+		quantityToSubtract: BigInteger
 	) {
 		val existingQuantity = getPortfolio(username)
 			.find { it.stockId == stockId }
-			?.quantity ?: 0
+			?.quantity ?: BigInteger.ZERO
 
-		if (existingQuantity - quantityToSubtract < 0) {
+		if (existingQuantity - quantityToSubtract < BigInteger.ZERO) {
 			throw IllegalArgumentException("This operation would result in the trader having negative holdings in stock $stockId")
 		}
 
@@ -83,7 +85,7 @@ class StockRepository(
 				PortfolioItem(
 					it.value1()!!,
 					it.value2()!!,
-					it.value3()!!,
+					BigInteger.valueOf(it.value3()!!),
 				)
 			}
 	}
@@ -102,7 +104,7 @@ class StockRepository(
 data class PortfolioItem(
 	val stockId: Int,
 	val stockName: String,
-	val quantity: Int,
+	val quantity: BigInteger,
 )
 
 data class SellOrderToTrader(

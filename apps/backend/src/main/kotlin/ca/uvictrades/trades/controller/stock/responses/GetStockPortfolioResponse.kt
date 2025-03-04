@@ -1,6 +1,7 @@
 package ca.uvictrades.trades.controller.stock.responses
 
 import ca.uvictrades.trades.persistence.PortfolioItem
+import java.math.BigInteger
 
 data class GetStockPortfolioResponse(
 	val success: Boolean = true,
@@ -9,7 +10,7 @@ data class GetStockPortfolioResponse(
 	data class DataElement(
 		val stock_id: String,
 		val stock_name: String,
-		val quantity_owned: Int,
+		val quantity_owned: BigInteger,
 	)
 }
 

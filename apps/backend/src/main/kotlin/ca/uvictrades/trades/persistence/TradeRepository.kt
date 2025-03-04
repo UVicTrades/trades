@@ -9,13 +9,11 @@ import ca.uvictrades.trades.model.public.tables.references.BUY_ORDER_SELL_ORDER
 import ca.uvictrades.trades.model.public.tables.references.WALLET_TRANSACTION
 import ca.uvictrades.trades.persistence.SellOrderWithBuys.BuyOrder
 import org.jooq.DSLContext
-import org.jooq.Records
 import org.jooq.impl.DSL.multiset
 import org.jooq.impl.DSL.select
-import org.jooq.kotlin.mapping
 import org.springframework.stereotype.Repository
 import java.math.BigDecimal
-import java.time.Instant
+import java.math.BigInteger
 import java.time.LocalDateTime
 
 @Repository
@@ -48,7 +46,7 @@ class TradeRepository(
 
 		val buyOrderRecord = create.newRecord(BUY_ORDER).apply {
 			this.trader = trader
-			this.quantity = quantity
+			this.quantity = quantity.toLong()
 		}
 
 		buyOrderRecord.store()
@@ -58,7 +56,7 @@ class TradeRepository(
 		sellOrderQuantities.forEach {
 			val joinRecord = create.newRecord(BUY_ORDER_SELL_ORDER)
 
-			joinRecord.quantity = it.quantity
+			joinRecord.quantity = it.quantity.toLong()
 			joinRecord.sellOrderId = it.sellOrderId
 			joinRecord.buyOrderId = buyOrderRecord.id
 
@@ -73,13 +71,13 @@ class TradeRepository(
 	fun newSellOrder(
 		trader: String,
 		stockId: Int,
-		quantity: Int,
+		quantity: BigInteger,
 		pricePerUnit: BigDecimal,
 	): SellOrderRecord {
 		val record = create.newRecord(SELL_ORDER).apply {
 			this.trader = trader
 			this.stockId = stockId
-			this.quantity = quantity
+			this.quantity = quantity.toLong()
 			this.pricePerShare = pricePerUnit
 		}
 
@@ -120,7 +118,7 @@ class TradeRepository(
 				).convertFrom { it.map { record ->
 					BuyOrder(
 						record.value1()!!,
-						record.value2()!!,
+						BigInteger.valueOf(record.value2()!!),
 						record.value3()!!,
 						record.value4()!!,
 					)
@@ -134,7 +132,7 @@ class TradeRepository(
 				SellOrderWithBuys(
 					record.value1()!!,
 					record.value2()!!,
-					record.value3()!!,
+					BigInteger.valueOf(record.value3()!!),
 					record.value4()!!,
 					record.value6(),
 					record.value7()!!,
@@ -169,7 +167,7 @@ class TradeRepository(
 					record.value1()!!,
 					record.value2()!!,
 					record.value3()!!,
-					record.value4()!!,
+					BigInteger.valueOf(record.value4()!!),
 					record.value5()!!,
 					record.value6()!!,
 					record.value7()!!,
@@ -182,7 +180,7 @@ data class BuyOrderWithStockIdAndWalletTxId(
 	val buyOrderId: Int,
 	val stockId: Int,
 	val trader: String,
-	val quantity: Int,
+	val quantity: BigInteger,
 	val walletTransactionId: Int,
 	val pricePerShare: BigDecimal,
 	val timestamp: LocalDateTime,
@@ -190,13 +188,13 @@ data class BuyOrderWithStockIdAndWalletTxId(
 
 data class SellOrderQuantity(
 	val sellOrderId: Int,
-	val quantity: Int,
+	val quantity: BigInteger,
 )
 
 data class SellOrderWithBuys(
 	val sellOrderId: Int,
 	val stockId: Int,
-	val quantity: Int,
+	val quantity: BigInteger,
 	val pricePerShare: BigDecimal,
 	val buyOrders: List<BuyOrder>,
 	val isCancelled: Boolean,
@@ -204,7 +202,7 @@ data class SellOrderWithBuys(
 ) {
 	data class BuyOrder(
 		val buyOrderId: Int,
-		val quantity: Int,
+		val quantity: BigInteger,
 		val sellerWalletTransactionId: Int,
 		val timestamp: LocalDateTime,
 	)

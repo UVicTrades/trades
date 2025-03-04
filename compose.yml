@@ -42,7 +42,7 @@ services:
       - trade_network
 
   database:
-    image: timescale/timescaledb-ha:pg17
+    image: postgres:17
     container_name: trade_database
     restart: unless-stopped
     depends_on: []
