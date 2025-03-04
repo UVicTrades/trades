@@ -55,7 +55,7 @@ class StockRepository(
 			?.quantity ?: 0
 
 		if (existingQuantity - quantityToSubtract < 0) {
-			error("This operation would result in the trader having negative holdings in stock $stockId")
+			throw IllegalArgumentException("This operation would result in the trader having negative holdings in stock $stockId")
 		}
 
 		with(STOCK_HOLDING) {

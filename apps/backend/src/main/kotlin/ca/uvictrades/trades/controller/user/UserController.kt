@@ -18,20 +18,28 @@ class UserController(
 
     @PostMapping("/authentication/register")
     fun registerUser(@RequestBody request: RegisterUserRequest): RegisterUserResponse {
-        traderService.registerNewTrader(
-            request.user_name,
-            request.password,
-            request.name,
-        )
+		try {
+			traderService.registerNewTrader(
+				request.user_name,
+				request.password,
+				request.name,
+			)
+		} catch (e: Exception) {
+			throw IllegalArgumentException()
+		}
 
-        return RegisterUserResponse()
+		return RegisterUserResponse()
     }
 
     @PostMapping("/authentication/login")
     fun loginUser(@RequestBody request: LoginUserRequest): LoginUserResponse {
-        val trader = traderService.loginTrader(request.user_name, request.password)
+		val trader = try {
+			traderService.loginTrader(request.user_name, request.password)
+		} catch (e: Exception) {
+			throw IllegalArgumentException()
+		}
 
-        val jwt = jwtGenerator.generate(trader.username!!)
+		val jwt = jwtGenerator.generate(trader.username!!)
 
         return LoginUserResponse(
             data = LoginUserResponse.TokenData(jwt)
