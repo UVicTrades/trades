@@ -19,7 +19,7 @@ class WalletRepository(
         val currentBalance = getWalletBalance(username)
 
         if (currentBalance + amount < BigDecimal.ZERO) {
-            error("This operation would bring the trader's balance below zero.")
+            throw IllegalArgumentException("This operation would bring the trader's balance below zero.")
         }
 
         val transaction = create.newRecord(WALLET_TRANSACTION).apply {
