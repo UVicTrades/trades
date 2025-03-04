@@ -8,14 +8,26 @@ import ca.uvictrades.trades.matching.port.MatchingService as MatchingServiceInte
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 import java.util.*
+import java.util.concurrent.locks.ReentrantLock
 import kotlin.math.min
 
 @Component
 class MatchingService : MatchingServiceInterface {
 
 	private val sellOrders: MutableMap<String, PriorityQueue<SellLimitOrder>> = mutableMapOf()
+	private val lock = ReentrantLock(true)
 
 	override fun place(order: SellLimitOrder) {
+		try {
+			lock.lock()
+
+			return internalPlaceSell(order)
+		} finally {
+		    lock.unlock()
+		}
+	}
+
+	private fun internalPlaceSell(order: SellLimitOrder) {
 
 		val stockSellOrders = getSellOrdersForStock(order.stock)
 
@@ -38,6 +50,17 @@ class MatchingService : MatchingServiceInterface {
 	}
 
 	override fun place(order: BuyMarketOrder): PlaceBuyOrderResult {
+
+		try {
+			lock.lock()
+
+			return internalPlaceOrder(order)
+		} finally {
+		    lock.unlock()
+		}
+	}
+
+	private fun internalPlaceOrder(order: BuyMarketOrder): PlaceBuyOrderResult {
 
 		var remainingUnits = order.quantity
 		var remainingLiquidity = order.liquidity
@@ -123,6 +146,16 @@ class MatchingService : MatchingServiceInterface {
 	}
 
 	override fun cancelOrder(withId: String, forStock: String) {
+		try {
+		    lock.lock()
+
+			internalCancelOrder(withId, forStock)
+		} finally {
+		    lock.unlock()
+		}
+	}
+
+	private fun internalCancelOrder(withId: String, forStock: String) {
 		val stockQueue = sellOrders[forStock] ?: error("$forStock does not exist")
 
 		val (idMatch, idNotMatch) = generateSequence { stockQueue.poll() }
