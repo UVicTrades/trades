@@ -1,0 +1,15 @@
+timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect
+1741227481558,584,1 Register Request,200,,Initial Setup 1-1,text,true,,371,267,1,1,http://localhost:8080/authentication/register,579,0,24
+1741227482676,131,2 Register Request,500,,Initial Setup 1-1,text,false,,379,266,1,1,http://localhost:8080/authentication/register,129,0,0
+1741227483310,416,3 Failed Login Request,500,,Initial Setup 1-1,text,false,,379,240,1,1,http://localhost:8080/authentication/login,416,0,2
+1741227484229,175,4 Login Request,200,,Initial Setup 1-1,text,true,,539,239,1,1,http://localhost:8080/authentication/login,175,0,1
+1741227484907,115,5 Create Google Stock Request,200,,Initial Setup 1-1,text,true,,383,378,1,1,http://localhost:8080/setup/createStock,115,0,0
+1741227485525,18,6 Add Google Stock Request,500,,Initial Setup 1-1,text,false,"Value in json path '$.success' expected to match regexp 'true', but it did not match: 'false'",379,401,1,1,http://localhost:8080/setup/addStockToUser,18,0,0
+1741227486046,22,7 Create Apple Stock Request,200,,Initial Setup 1-1,text,true,,383,377,1,1,http://localhost:8080/setup/createStock,22,0,2
+1741227487627,13,8 Add Apple Stock Request,500,,Initial Setup 1-1,text,false,"Value in json path '$.success' expected to match regexp 'true', but it did not match: 'false'",379,401,1,1,http://localhost:8080/setup/addStockToUser,13,0,0
+1741227488142,77,9 Get Stock Portfolio Request,200,,Initial Setup 1-1,text,false,,369,346,1,1,http://localhost:8080/transaction/getStockPortfolio,77,0,2
+1741227488723,27,10 Place Stock Order Request,500,,Initial Setup 1-1,text,false,"Value in json path '$.success' expected to match regexp 'true', but it did not match: 'false'",379,452,1,1,http://localhost:8080/engine/placeStockOrder,27,0,0
+1741227489252,17,11 Place Stock Order Request,500,,Initial Setup 1-1,text,false,"Value in json path '$.success' expected to match regexp 'true', but it did not match: 'false'",379,452,1,1,http://localhost:8080/engine/placeStockOrder,16,0,2
+1741227489772,34,12 Get Stock Portfolio Request,200,,Initial Setup 1-1,text,true,,369,346,1,1,http://localhost:8080/transaction/getStockPortfolio,34,0,2
+1741227490309,99,13 Get Stock Transactions Request,200,,Initial Setup 1-1,text,false,,369,349,1,1,http://localhost:8080/transaction/getStockTransactions,98,0,0
+1741227490427,4,Debug Sampler,200,OK,Initial Setup 1-1,text,true,,1229,0,1,1,null,0,0,0
