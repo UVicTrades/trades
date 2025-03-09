@@ -1,15 +1,15 @@
 timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect
-1741288320917,489,1 Register Request,200,,Initial Setup 1-1,text,true,,371,267,1,1,http://localhost:8080/authentication/register,483,0,31
-1741288321942,129,2 Register Request,400,,Initial Setup 1-1,text,false,,351,266,1,1,http://localhost:8080/authentication/register,127,0,0
-1741288322574,417,3 Failed Login Request,400,,Initial Setup 1-1,text,false,,351,240,1,1,http://localhost:8080/authentication/login,416,0,2
-1741288323493,168,4 Login Request,200,,Initial Setup 1-1,text,true,,539,239,1,1,http://localhost:8080/authentication/login,168,0,2
-1741288324165,67,5 Create Google Stock Request,200,,Initial Setup 1-1,text,true,,383,378,1,1,http://localhost:8080/setup/createStock,67,0,0
-1741288324734,49,6 Add Google Stock Request,200,,Initial Setup 1-1,text,true,,371,401,1,1,http://localhost:8080/setup/addStockToUser,48,0,0
-1741288325284,21,7 Create Apple Stock Request,200,,Initial Setup 1-1,text,true,,383,377,1,1,http://localhost:8080/setup/createStock,21,0,0
-1741288326435,60,8 Add Apple Stock Request,200,,Initial Setup 1-1,text,true,,371,401,1,1,http://localhost:8080/setup/addStockToUser,60,0,0
-1741288326997,75,9 Get Stock Portfolio Request,200,,Initial Setup 1-1,text,true,,503,346,1,1,http://localhost:8080/transaction/getStockPortfolio,75,0,0
-1741288327579,75,10 Place Stock Order Request,200,,Initial Setup 1-1,text,true,,371,452,1,1,http://localhost:8080/engine/placeStockOrder,75,0,0
-1741288328156,31,11 Place Stock Order Request,200,,Initial Setup 1-1,text,true,,371,452,1,1,http://localhost:8080/engine/placeStockOrder,31,0,0
-1741288328689,16,12 Get Stock Portfolio Request,200,,Initial Setup 1-1,text,true,,369,346,1,1,http://localhost:8080/transaction/getStockPortfolio,16,0,0
-1741288329208,120,13 Get Stock Transactions Request,200,,Initial Setup 1-1,text,true,,829,349,1,1,http://localhost:8080/transaction/getStockTransactions,120,0,0
-1741288329347,3,Debug Sampler,200,OK,Initial Setup 1-1,text,true,,1216,0,1,1,null,0,0,0
+1741562836718,503,1 Register Request,200,,Initial Setup 1-1,text,true,,371,267,1,1,http://localhost:8080/authentication/register,497,0,25
+1741562837756,128,2 Register Request,400,,Initial Setup 1-1,text,false,,351,266,1,1,http://localhost:8080/authentication/register,127,0,0
+1741562838388,427,3 Failed Login Request,400,,Initial Setup 1-1,text,false,,351,240,1,1,http://localhost:8080/authentication/login,427,0,2
+1741562839317,182,4 Login Request,200,,Initial Setup 1-1,text,true,,539,239,1,1,http://localhost:8080/authentication/login,182,0,2
+1741562840005,69,5 Create Google Stock Request,200,,Initial Setup 1-1,text,true,,383,378,1,1,http://localhost:8080/setup/createStock,69,0,0
+1741562840577,52,6 Add Google Stock Request,200,,Initial Setup 1-1,text,true,,371,401,1,1,http://localhost:8080/setup/addStockToUser,52,0,0
+1741562841131,21,7 Create Apple Stock Request,200,,Initial Setup 1-1,text,true,,383,377,1,1,http://localhost:8080/setup/createStock,21,0,0
+1741562842313,25,8 Add Apple Stock Request,200,,Initial Setup 1-1,text,true,,371,401,1,1,http://localhost:8080/setup/addStockToUser,24,0,0
+1741562842840,75,9 Get Stock Portfolio Request,200,,Initial Setup 1-1,text,true,,503,346,1,1,http://localhost:8080/transaction/getStockPortfolio,75,0,0
+1741562843420,91,10 Place Stock Order Request,200,,Initial Setup 1-1,text,true,,371,452,1,1,http://localhost:8080/engine/placeStockOrder,91,0,0
+1741562844013,86,11 Place Stock Order Request,200,,Initial Setup 1-1,text,true,,371,452,1,1,http://localhost:8080/engine/placeStockOrder,86,0,0
+1741562844602,17,12 Get Stock Portfolio Request,200,,Initial Setup 1-1,text,true,,369,346,1,1,http://localhost:8080/transaction/getStockPortfolio,17,0,0
+1741562845120,111,13 Get Stock Transactions Request,200,,Initial Setup 1-1,text,true,,829,349,1,1,http://localhost:8080/transaction/getStockTransactions,111,0,0
+1741562845249,4,Debug Sampler,200,OK,Initial Setup 1-1,text,true,,1216,0,1,1,null,0,0,0

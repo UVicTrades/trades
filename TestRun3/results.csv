@@ -7137,3 +7137,42 @@ timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success
 1741411325856,12,23 Get Stock Portfolio Request,400,,User Thread Group 1-963,text,false,"Value in json path '$.success' expected to match regexp 'true', but it did not match: 'false'",388,186,3,3,http://localhost:8080/transaction/getStockPortfolio,12,0,8
 1741411325877,12,23 Get Stock Portfolio Request,400,,User Thread Group 1-954,text,false,"Value in json path '$.success' expected to match regexp 'true', but it did not match: 'false'",388,186,2,2,http://localhost:8080/transaction/getStockPortfolio,12,0,8
 1741411326055,13,23 Get Stock Portfolio Request,400,,User Thread Group 1-965,text,false,"Value in json path '$.success' expected to match regexp 'true', but it did not match: 'false'",388,186,1,1,http://localhost:8080/transaction/getStockPortfolio,13,0,7
+1741562939290,29882,16 Get Stock Prices Request,200,,User Thread Group 1-2248,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,29882,0,1
+1741562939328,29852,16 Get Stock Prices Request,200,,User Thread Group 1-1569,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,29852,0,0
+1741562939511,29670,16 Get Stock Prices Request,200,,User Thread Group 1-2914,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,29670,0,0
+1741562939378,29809,16 Get Stock Prices Request,200,,User Thread Group 1-2650,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,29809,0,0
+1741562939519,29668,16 Get Stock Prices Request,200,,User Thread Group 1-3370,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,29666,0,0
+1741562939490,29706,16 Get Stock Prices Request,200,,User Thread Group 1-3953,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,29706,0,3
+1741562939497,29700,16 Get Stock Prices Request,200,,User Thread Group 1-2999,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,29700,0,0
+1741562939311,29890,16 Get Stock Prices Request,200,,User Thread Group 1-2656,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,29890,0,0
+1741562939088,30119,16 Get Stock Prices Request,200,,User Thread Group 1-3380,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,30119,0,1
+1741562939217,29990,16 Get Stock Prices Request,200,,User Thread Group 1-2912,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,29990,0,0
+1741562939606,29606,16 Get Stock Prices Request,200,,User Thread Group 1-3297,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,29606,0,4
+1741562939525,29687,16 Get Stock Prices Request,200,,User Thread Group 1-3389,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,29687,0,0
+1741562939187,30026,16 Get Stock Prices Request,200,,User Thread Group 1-2915,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,30026,0,0
+1741562939531,29682,16 Get Stock Prices Request,200,,User Thread Group 1-2930,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,29682,0,0
+1741562939508,29706,16 Get Stock Prices Request,200,,User Thread Group 1-2223,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,29706,0,0
+1741562939668,29548,16 Get Stock Prices Request,200,,User Thread Group 1-2235,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,29548,0,0
+1741562939688,29529,16 Get Stock Prices Request,200,,User Thread Group 1-3386,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,29529,0,1
+1741562939355,29869,16 Get Stock Prices Request,200,,User Thread Group 1-3037,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,29868,0,1
+1741562939312,29915,16 Get Stock Prices Request,200,,User Thread Group 1-2928,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,29915,0,0
+1741562939376,29852,16 Get Stock Prices Request,200,,User Thread Group 1-2937,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,29852,0,0
+1741562939418,29810,16 Get Stock Prices Request,200,,User Thread Group 1-3371,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,29810,0,5
+1741562939238,29994,16 Get Stock Prices Request,200,,User Thread Group 1-3027,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,29994,0,5
+1741562939214,30021,16 Get Stock Prices Request,200,,User Thread Group 1-3270,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,30021,0,1
+1741562939347,29889,16 Get Stock Prices Request,200,,User Thread Group 1-2647,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,29889,0,0
+1741562939270,29966,16 Get Stock Prices Request,200,,User Thread Group 1-3685,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,29966,0,1
+1741562939570,29685,16 Get Stock Prices Request,200,,User Thread Group 1-3000,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,29685,0,0
+1741562939571,29666,16 Get Stock Prices Request,200,,User Thread Group 1-3593,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,29666,0,0
+1741562939018,30241,16 Get Stock Prices Request,200,,User Thread Group 1-2572,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,30241,0,3
+1741562938877,30387,16 Get Stock Prices Request,200,,User Thread Group 1-2926,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,30387,0,3
+1741562939446,29812,16 Get Stock Prices Request,200,,User Thread Group 1-2236,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,29812,0,3
+1741562939176,30053,16 Get Stock Prices Request,200,,User Thread Group 1-3013,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,30053,0,0
+1741562939514,29792,16 Get Stock Prices Request,200,,User Thread Group 1-2241,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,29792,0,0
+1741562939562,29789,16 Get Stock Prices Request,200,,User Thread Group 1-3356,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,29789,0,0
+1741562939513,29686,16 Get Stock Prices Request,200,,User Thread Group 1-2242,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,29686,0,0
+1741562939570,29789,16 Get Stock Prices Request,200,,User Thread Group 1-2558,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,29789,0,0
+1741562939434,29833,16 Get Stock Prices Request,200,,User Thread Group 1-2607,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,29833,0,0
+1741562965111,4921,16 Get Stock Prices Request,200,,User Thread Group 1-4132,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,4921,0,4
+1741562961375,12187,16 Get Stock Prices Request,200,,User Thread Group 1-1090,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,12187,0,0
+1741562955041,21175,16 Get Stock Prices Request,200,,User Thread Group 1-3562,text,false,,426,341,5000,5000,http://localhost:8080/transaction/getStockPrices,21175,0,1
