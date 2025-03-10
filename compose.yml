@@ -41,6 +41,18 @@ services:
     networks:
       - trade_network
 
+  rabbit:
+    image: rabbitmq:3
+    networks:
+      - trade_network
+
+
+  matching:
+    build:
+      context: apps/matching
+    networks:
+      - trade_network
+
   database:
     image: postgres:17
     container_name: trade_database

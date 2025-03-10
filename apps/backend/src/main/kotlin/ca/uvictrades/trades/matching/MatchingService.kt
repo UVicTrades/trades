@@ -12,7 +12,6 @@ import java.util.*
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.math.min
 
-@Component
 class MatchingService : MatchingServiceInterface {
 
 	private val sellOrders: MutableMap<String, PriorityQueue<SellLimitOrder>> = mutableMapOf()
