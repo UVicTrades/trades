@@ -8,22 +8,29 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
 class RabbitConfig {
 
+	@Value("\${matching.rpc.queue.sell-order}")
+	private lateinit var sellOrderQueueName: String
+
+	@Value("\${matching.rpc.queue.buy-order:matching.rpc.buyOrder}")
+	private lateinit var buyOrderQueueName: String
+
 	@Bean
 	@Qualifier("sellOrder")
-	fun ueue(): Queue {
-		return Queue("matching.rpc.sellOrder")
+	fun sellOrderQueue(): Queue {
+		return Queue(sellOrderQueueName)
 	}
 
 	@Bean
 	@Qualifier("buyOrder")
 	fun buyOrderQueue(): Queue {
-		return Queue("matching.rpc.buyOrder")
+		return Queue(buyOrderQueueName)
 	}
 
 	@Bean
