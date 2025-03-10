@@ -45,6 +45,7 @@ services:
     image: rabbitmq:3
     networks:
       - trade_network
+    ports: [ "5672:5672" ]
 
 
   matching:

@@ -6,6 +6,7 @@ import ca.uvictrades.trades.matching.port.PlaceBuyOrderResult
 import ca.uvictrades.trades.matching.port.SellLimitOrder
 import org.slf4j.LoggerFactory
 import org.springframework.amqp.rabbit.core.RabbitTemplate
+import org.springframework.core.ParameterizedTypeReference
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 
@@ -18,11 +19,12 @@ class MatchingProxy(
 	private val logger = LoggerFactory.getLogger(this::class.java)
 
 	override fun place(order: SellLimitOrder) {
-		rabbitTemplate.convertSendAndReceive("matching.rpc.requests", order)
+		rabbitTemplate.convertSendAndReceive("matching.rpc.sellOrder", order)
 	}
 
 	override fun place(order: BuyMarketOrder): PlaceBuyOrderResult {
-		TODO("Not yet implemented")
+		val type = object: ParameterizedTypeReference<PlaceBuyOrderResult>() {}
+		return rabbitTemplate.convertSendAndReceiveAsType("matching.rpc.buyOrder", order, type)!!
 	}
 
 	override fun getStockPrices(): Map<String, BigDecimal> {
