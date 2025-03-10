@@ -1,10 +1,12 @@
 # syntax=docker/dockerfile:1
 FROM eclipse-temurin:21-jdk-jammy as build
-
+RUN apt-get update && apt-get install -y dos2unix
 WORKDIR /build
 
 COPY --chmod=0755 mvnw mvnw
 COPY .mvn/ .mvn/
+
+RUN dos2unix mvnw && chmod +x mvnw
 
 # Download dependencies as a separate step to take advantage of Docker's caching.
 # Leverage a cache mount to /root/.m2 so that subsequent builds don't have to

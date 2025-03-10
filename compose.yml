@@ -26,13 +26,24 @@ services:
   #   networks:
   #     - trade_network
 
+  nginx:
+    image: nginx:latest
+    container_name: trade_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./apps/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - trade_network
+
   backend:
     build:
       context: apps/backend
-    container_name: trade_backend
+    # container_name: trade_backend
     restart: unless-stopped
     depends_on: []
-    ports: [ 8080:8200 ] # Exposing backend on localhost:80
+    # ports: [ 8080:8200 ] # Exposing backend on localhost:80
     environment:
       PORT: 8200
       DB_URL: jdbc:postgresql://database:5432/trade
