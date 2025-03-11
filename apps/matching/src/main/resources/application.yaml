@@ -14,3 +14,4 @@ matching:
       sell-order: matching.rpc.sellOrder.${matching.rpc.queue.shard-id}
       buy-order: matching.rpc.buyOrder.${matching.rpc.queue.shard-id}
       get-stock-prices: matching.rpc.getStockPrices.${matching.rpc.queue.shard-id}
+      cancel-stock-order: matching.rpc.cancelStockOrder.${matching.rpc.queue.shard-id}

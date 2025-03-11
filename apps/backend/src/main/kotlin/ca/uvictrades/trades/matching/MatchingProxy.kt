@@ -53,6 +53,8 @@ class MatchingProxy(
 	}
 
 	override fun cancelOrder(withId: String, forStock: String) {
-		TODO("Not yet implemented")
+		val request = mapOf("orderId" to withId, "stockId" to forStock)
+		rabbitTemplate.convertSendAndReceive("matching.rpc.cancelStockOrder.", request)
+		logger.info("Sent cancel order request for order id $withId and stock id $forStock")
 	}
 }

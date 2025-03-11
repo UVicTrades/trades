@@ -34,4 +34,16 @@ class RabbitQueueListener(
         return matchingService.getStockPrices()
     }
 
+    @RabbitListener(queues = ["#{'\${matching.rpc.queue.cancel-stock-order}'}"])
+    fun receiveCancelStockOrderRequest(message: Map<String, String>) {
+        val orderId = message["orderId"]
+        val stockId = message["stockId"]
+
+        if (orderId != null && stockId != null) {
+            logger.info("received cancel stock order request with order id {} and stock id {}", orderId, stockId)
+            matchingService.cancelOrder(orderId, stockId)
+        } else {
+            logger.warn("invalid cancel stock order request: {}", message)
+        }
+    }
 }

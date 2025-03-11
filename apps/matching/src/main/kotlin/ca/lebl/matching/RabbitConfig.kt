@@ -24,6 +24,9 @@ class RabbitConfig {
 	@Value("\${matching.rpc.queue.get-stock-prices}")
 	private lateinit var getStockPricesQueueName: String
 
+	@Value("\${matching.rpc.queue.cancel-stock-order}")
+	private lateinit var cancelStockOrderQueueName: String
+
 	@Bean
 	@Qualifier("sellOrder")
 	fun sellOrderQueue(): Queue {
@@ -45,7 +48,7 @@ class RabbitConfig {
 	@Bean
 	@Qualifier("cancelStockOrder")
 	fun cancelStockOrderQueue(): Queue {
-		return Queue("matching.rpc.cancelStockOrder")
+		return Queue(cancelStockOrderQueueName)
 	}
 
 	@Bean
