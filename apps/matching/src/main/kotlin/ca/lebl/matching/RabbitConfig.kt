@@ -21,6 +21,9 @@ class RabbitConfig {
 	@Value("\${matching.rpc.queue.buy-order:matching.rpc.buyOrder}")
 	private lateinit var buyOrderQueueName: String
 
+	@Value("\${matching.rpc.queue.get-stock-prices}")
+	private lateinit var getStockPricesQueueName: String
+
 	@Bean
 	@Qualifier("sellOrder")
 	fun sellOrderQueue(): Queue {
@@ -36,7 +39,7 @@ class RabbitConfig {
 	@Bean
 	@Qualifier("getStockPrices")
 	fun getStockPricesQueue(): Queue {
-		return Queue("matching.rpc.getStockPrices")
+		return Queue(getStockPricesQueueName)
 	}
 
 	@Bean
@@ -75,7 +78,7 @@ class RabbitConfig {
 	}
 
 	@Bean
-	fun getPricesBinding(
+	fun getStockPricesBinding(
 		exchange: DirectExchange,
 		@Qualifier("getStockPrices")
 		queue: Queue,

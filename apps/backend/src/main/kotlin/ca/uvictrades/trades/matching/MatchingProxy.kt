@@ -27,16 +27,29 @@ class MatchingProxy(
 	}
 
 	override fun getStockPrices(): Map<String, BigDecimal> {
-		TODO("Not yet implemented")
-
-		val map = mutableMapOf<String, BigDecimal>()
 		val stockIds = listOf(1, 2)
+		val combinedPrices = mutableMapOf<String, BigDecimal>()
+
+		val typeRef = object : ParameterizedTypeReference<Map<String, BigDecimal>>() {}
+
 
 		for (id in stockIds) {
-
+			val routingKey = "matching.rpc.getStockPrices.$id"
+			
+			val response = rabbitTemplate.convertSendAndReceiveAsType(
+				routingKey,
+				"", // empty request
+				typeRef
+			)
+			
+			if (response != null) {
+				combinedPrices.putAll(response)
+			} else {
+				logger.warn("No price response received from matching engine for shard $id")
+			}
 		}
 
-		return map
+		return combinedPrices
 	}
 
 	override fun cancelOrder(withId: String, forStock: String) {

@@ -13,3 +13,4 @@ matching:
       shard-id: 1  # This can be overridden with environment variables
       sell-order: matching.rpc.sellOrder.${matching.rpc.queue.shard-id}
       buy-order: matching.rpc.buyOrder.${matching.rpc.queue.shard-id}
+      get-stock-prices: matching.rpc.getStockPrices.${matching.rpc.queue.shard-id}

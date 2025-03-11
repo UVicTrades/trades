@@ -7,6 +7,7 @@ import ca.lebl.matching.matchingservice.port.SellLimitOrder
 import org.slf4j.LoggerFactory
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.stereotype.Component
+import java.math.BigDecimal
 
 @Component
 class RabbitQueueListener(
@@ -25,6 +26,12 @@ class RabbitQueueListener(
     fun receiveBuyOrderRequest(message: BuyMarketOrder): PlaceBuyOrderResult {
         logger.info("received buy order with stock id {}", message.stock)
         return matchingService.place(message)
+    }
+
+    @RabbitListener(queues = ["#{'\${matching.rpc.queue.get-stock-prices}'}"])
+    fun receiveGetStockPricesRequest():  Map<String, BigDecimal> {
+        logger.info("received get stock prices request")
+        return matchingService.getStockPrices()
     }
 
 }
