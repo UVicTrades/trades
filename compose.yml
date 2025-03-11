@@ -26,15 +26,115 @@ services:
   #   networks:
   #     - trade_network
 
-  backend:
+  backend-1:
     build:
       context: apps/backend
     restart: unless-stopped
     depends_on: []
-    deploy:
-      mode: replicated
-      replicas: 3
-      endpoint_mode: vip
+    environment:
+      PORT: 8200
+      DB_URL: jdbc:postgresql://database:5432/trade
+      DB_USERNAME: trade
+      DB_PASSWORD: trade
+    networks:
+      - trade_network
+
+  backend-2:
+    build:
+      context: apps/backend
+    restart: unless-stopped
+    depends_on: []
+    environment:
+      PORT: 8200
+      DB_URL: jdbc:postgresql://database:5432/trade
+      DB_USERNAME: trade
+      DB_PASSWORD: trade
+    networks:
+      - trade_network
+
+  backend-3:
+    build:
+      context: apps/backend
+    restart: unless-stopped
+    depends_on: []
+    environment:
+      PORT: 8200
+      DB_URL: jdbc:postgresql://database:5432/trade
+      DB_USERNAME: trade
+      DB_PASSWORD: trade
+    networks:
+      - trade_network
+
+  backend-4:
+    build:
+      context: apps/backend
+    restart: unless-stopped
+    depends_on: []
+    environment:
+      PORT: 8200
+      DB_URL: jdbc:postgresql://database:5432/trade
+      DB_USERNAME: trade
+      DB_PASSWORD: trade
+    networks:
+      - trade_network
+
+  backend-5:
+    build:
+      context: apps/backend
+    restart: unless-stopped
+    depends_on: []
+    environment:
+      PORT: 8200
+      DB_URL: jdbc:postgresql://database:5432/trade
+      DB_USERNAME: trade
+      DB_PASSWORD: trade
+    networks:
+      - trade_network
+
+  backend-6:
+    build:
+      context: apps/backend
+    restart: unless-stopped
+    depends_on: []
+    environment:
+      PORT: 8200
+      DB_URL: jdbc:postgresql://database:5432/trade
+      DB_USERNAME: trade
+      DB_PASSWORD: trade
+    networks:
+      - trade_network
+
+  backend-7:
+    build:
+      context: apps/backend
+    restart: unless-stopped
+    depends_on: []
+    environment:
+      PORT: 8200
+      DB_URL: jdbc:postgresql://database:5432/trade
+      DB_USERNAME: trade
+      DB_PASSWORD: trade
+    networks:
+      - trade_network
+
+  backend-8:
+    build:
+      context: apps/backend
+    restart: unless-stopped
+    depends_on: []
+    environment:
+      PORT: 8200
+      DB_URL: jdbc:postgresql://database:5432/trade
+      DB_USERNAME: trade
+      DB_PASSWORD: trade
+    networks:
+      - trade_network
+
+  backend-9:
+    build:
+      context: apps/backend
+    restart: unless-stopped
+    depends_on: []
     environment:
       PORT: 8200
       DB_URL: jdbc:postgresql://database:5432/trade
@@ -50,7 +150,7 @@ services:
     volumes:
       - ./apps/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-      - backend
+      - backend-9
     networks:
       - trade_network
 
@@ -83,7 +183,7 @@ services:
     restart: unless-stopped
     depends_on: []
     volumes:
-      - ./apps/data/database/postgres_data:/var/lib/postgresql/data
+      - /var/lib/postgresql/data
     ports: [5432:5432]
     environment:
       - POSTGRES_USER=trade
@@ -91,3 +191,4 @@ services:
       - POSTGRES_DB=trade
     networks:
       - trade_network
+    command: ["postgres", "-c", "max_connections=200"]
