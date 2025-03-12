@@ -1,14 +1,21 @@
 spring:
   application:
     name: trades
+  datasource:
+    hikari:
+      maximum-pool-size: 200
+      minimum-idle: 20
+      idle-timeout: 300000
+      connection-timeout: 20000
+      max-lifetime: 1800000
 server:
   port: ${PORT:8080}
 
   tomcat:
-    accept-count: 100
+    accept-count: 5000
     max-connections: 10000
     threads:
-      max: 600
+      max: 10000
 uvictrades:
   security:
     expiration-seconds: ${TOKEN_EXPIRATION_SECONDS:86400}

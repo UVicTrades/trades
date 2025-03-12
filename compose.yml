@@ -33,6 +33,12 @@ services:
     restart: unless-stopped
     depends_on: []
     ports: [ 8080:8200 ] # Exposing backend on localhost:80
+    deploy:
+      resources:
+        reservations:
+          memory: 2g
+        limits:
+          memory: 8g
     environment:
       PORT: 8200
       DB_URL: jdbc:postgresql://database:5432/trade
