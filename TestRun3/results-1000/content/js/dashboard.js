@@ -133,7 +133,7 @@ $(document).ready(function() {
         widgets: ['zebra']
     });
 
-    var data = {"OkPercent": 66.66666666666667, "KoPercent": 33.333333333333336};
+    var data = {"OkPercent": 99.97266763848397, "KoPercent": 0.027332361516034985};
     var dataset = [
         {
             "label" : "FAIL",
@@ -173,7 +173,7 @@ $(document).ready(function() {
     });
 
     // Creates APDEX table
-    createTable($("#apdexTable"), {"supportsControllersDiscrimination": true, "overall": {"data": [0.029, 500, 1500, "Total"], "isController": false}, "titles": ["Apdex", "T (Toleration threshold)", "F (Frustration threshold)", "Label"], "items": [{"data": [0.0, 500, 1500, "16 Get Stock Prices Request"], "isController": false}, {"data": [0.0765, 500, 1500, "14 Register Request"], "isController": false}, {"data": [0.0105, 500, 1500, "15 Login Request"], "isController": false}]}, function(index, item){
+    createTable($("#apdexTable"), {"supportsControllersDiscrimination": true, "overall": {"data": [0.6269588192419825, 500, 1500, "Total"], "isController": false}, "titles": ["Apdex", "T (Toleration threshold)", "F (Frustration threshold)", "Label"], "items": [{"data": [0.9859578736208626, 500, 1500, "23 Get Stock Portfolio Request"], "isController": false}, {"data": [0.2705, 500, 1500, "16 Get Stock Prices Request"], "isController": false}, {"data": [0.062, 500, 1500, "14 Register Request"], "isController": false}, {"data": [1.0, 500, 1500, "Debug Sampler"], "isController": false}, {"data": [0.7642928786359077, 500, 1500, "19 Place Stock Order Request"], "isController": false}, {"data": [0.8149448345035105, 500, 1500, "20 Get Stock Transactions Request"], "isController": false}, {"data": [0.4262788365095286, 500, 1500, "17 Add Money Request"], "isController": false}, {"data": [0.6504513540621866, 500, 1500, "18 Get Wallet Balance Request"], "isController": false}, {"data": [0.9764292878635907, 500, 1500, "22 Get Wallet Balance Request"], "isController": false}, {"data": [0.014, 500, 1500, "15 Login Request"], "isController": false}, {"data": [0.936308926780341, 500, 1500, "21 Get Wallet Transactions Request"], "isController": false}]}, function(index, item){
         switch(index){
             case 0:
                 item = item.toFixed(3);
@@ -187,7 +187,7 @@ $(document).ready(function() {
     }, [[0, 0]], 3);
 
     // Create statistics table
-    createTable($("#statisticsTable"), {"supportsControllersDiscrimination": true, "overall": {"data": ["Total", 3000, 1000, 33.333333333333336, 4901.183666666669, 1, 12691, 5149.5, 8414.8, 9191.499999999998, 10952.51999999999, 121.10447279186178, 50.563995198712256, 34.797194160746], "isController": false}, "titles": ["Label", "#Samples", "FAIL", "Error %", "Average", "Min", "Max", "Median", "90th pct", "95th pct", "99th pct", "Transactions/s", "Received", "Sent"], "items": [{"data": ["16 Get Stock Prices Request", 1000, 1000, 100.0, 2771.8190000000004, 1, 8030, 2710.5, 5874.9, 6441.9, 6746.76, 44.10143329658214, 15.8920203969129, 14.928722781146638], "isController": false}, {"data": ["14 Register Request", 1000, 0, 0.0, 5085.337999999993, 222, 9997, 5583.0, 8111.7, 8566.75, 9238.53, 51.1012315396801, 18.514215723848945, 14.059376037993767], "isController": false}, {"data": ["15 Login Request", 1000, 0, 0.0, 6846.394000000007, 557, 12691, 7064.0, 9834.8, 10584.599999999999, 11547.76, 42.868778668495736, 22.716810522677584, 10.646863077120932], "isController": false}]}, function(index, item){
+    createTable($("#statisticsTable"), {"supportsControllersDiscrimination": true, "overall": {"data": ["Total", 10976, 3, 0.027332361516034985, 1781.1577077259585, 0, 17267, 350.0, 6143.300000000001, 8155.149999999992, 11195.379999999997, 352.28038643001577, 182.386908439516, 108.45961957786372], "isController": false}, "titles": ["Label", "#Samples", "FAIL", "Error %", "Average", "Min", "Max", "Median", "90th pct", "95th pct", "99th pct", "Transactions/s", "Received", "Sent"], "items": [{"data": ["23 Get Stock Portfolio Request", 997, 0, 0.0, 61.192577733199606, 1, 1333, 7.0, 200.60000000000014, 377.1999999999998, 675.1599999999999, 131.87830687830686, 54.99222366898148, 45.028702670304234], "isController": false}, {"data": ["16 Get Stock Prices Request", 1000, 3, 0.3, 3158.2619999999984, 2, 14297, 2419.5, 7171.5, 8406.499999999995, 11528.830000000005, 39.687264356867885, 18.790330632118902, 13.434487798646664], "isController": false}, {"data": ["14 Register Request", 1000, 0, 0.0, 5379.289000000012, 364, 17267, 4900.0, 10311.4, 11356.849999999993, 13434.75, 41.909391894723605, 15.18396913373287, 11.5304442264574], "isController": false}, {"data": ["Debug Sampler", 997, 0, 0.0, 0.3049147442326985, 0, 23, 0.0, 1.0, 1.0, 2.0, 135.72011979308468, 188.56855559147834, 0.0], "isController": false}, {"data": ["19 Place Stock Order Request", 997, 0, 0.0, 737.6359077231685, 9, 9522, 347.0, 1691.8000000000004, 3126.5999999999995, 6797.379999999994, 49.77036741214057, 18.032037412015775, 21.708235573083066], "isController": false}, {"data": ["20 Get Stock Transactions Request", 997, 0, 0.0, 485.41323971915773, 3, 5911, 326.0, 1051.2, 1582.6999999999975, 3639.1199999999944, 92.36612933110987, 53.2692496989068, 31.80821665971836], "isController": false}, {"data": ["17 Add Money Request", 997, 0, 0.0, 2262.9789368104307, 8, 14230, 1260.0, 6402.4, 7688.499999999996, 9256.459999999997, 40.32029765034173, 14.608232840114045, 15.184525960994055], "isController": false}, {"data": ["18 Get Wallet Balance Request", 997, 0, 0.0, 1174.5336008024092, 2, 10640, 465.0, 3588.0, 4994.199999999998, 8650.499999999998, 43.10046688569946, 16.162675082137298, 14.674189839832266], "isController": false}, {"data": ["22 Get Wallet Balance Request", 997, 0, 0.0, 102.52557673019041, 1, 1542, 12.0, 338.0, 489.0999999999999, 890.1199999999999, 118.47890671420083, 44.31388796048723, 40.33789178550208], "isController": false}, {"data": ["15 Login Request", 1000, 0, 0.0, 6015.7520000000095, 473, 14786, 5637.0, 9820.9, 11130.649999999992, 12893.67, 40.29171199484266, 21.35118413564205, 10.006824408719126], "isController": false}, {"data": ["21 Get Wallet Transactions Request", 997, 0, 0.0, 187.13440320962886, 1, 4238, 45.0, 563.2000000000005, 682.3999999999996, 1444.8799999999992, 102.41397021058037, 48.462578646635855, 35.368415350539294], "isController": false}]}, function(index, item){
         switch(index){
             // Errors pct
             case 3:
@@ -217,7 +217,7 @@ $(document).ready(function() {
     }, [[0, 0]], 0, summaryTableHeader);
 
     // Create error table
-    createTable($("#errorsTable"), {"supportsControllersDiscrimination": false, "titles": ["Type of error", "Number of errors", "% in errors", "% in all samples"], "items": [{"data": ["Assertion failed", 1000, 100.0, 33.333333333333336], "isController": false}]}, function(index, item){
+    createTable($("#errorsTable"), {"supportsControllersDiscrimination": false, "titles": ["Type of error", "Number of errors", "% in errors", "% in all samples"], "items": [{"data": ["Assertion failed", 3, 100.0, 0.027332361516034985], "isController": false}]}, function(index, item){
         switch(index){
             case 2:
             case 3:
@@ -228,7 +228,7 @@ $(document).ready(function() {
     }, [[1, 1]]);
 
         // Create top5 errors by sampler
-    createTable($("#top5ErrorsBySamplerTable"), {"supportsControllersDiscrimination": false, "overall": {"data": ["Total", 3000, 1000, "Assertion failed", 1000, "", "", "", "", "", "", "", ""], "isController": false}, "titles": ["Sample", "#Samples", "#Errors", "Error", "#Errors", "Error", "#Errors", "Error", "#Errors", "Error", "#Errors", "Error", "#Errors"], "items": [{"data": ["16 Get Stock Prices Request", 1000, 1000, "Assertion failed", 1000, "", "", "", "", "", "", "", ""], "isController": false}, {"data": [], "isController": false}, {"data": [], "isController": false}]}, function(index, item){
+    createTable($("#top5ErrorsBySamplerTable"), {"supportsControllersDiscrimination": false, "overall": {"data": ["Total", 10976, 3, "Assertion failed", 3, "", "", "", "", "", "", "", ""], "isController": false}, "titles": ["Sample", "#Samples", "#Errors", "Error", "#Errors", "Error", "#Errors", "Error", "#Errors", "Error", "#Errors", "Error", "#Errors"], "items": [{"data": [], "isController": false}, {"data": ["16 Get Stock Prices Request", 1000, 3, "Assertion failed", 3, "", "", "", "", "", "", "", ""], "isController": false}, {"data": [], "isController": false}, {"data": [], "isController": false}, {"data": [], "isController": false}, {"data": [], "isController": false}, {"data": [], "isController": false}, {"data": [], "isController": false}, {"data": [], "isController": false}, {"data": [], "isController": false}, {"data": [], "isController": false}]}, function(index, item){
         return item;
     }, [[0, 0]], 0);
 

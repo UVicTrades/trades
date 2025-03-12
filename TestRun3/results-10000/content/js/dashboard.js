@@ -133,7 +133,7 @@ $(document).ready(function() {
         widgets: ['zebra']
     });
 
-    var data = {"OkPercent": 83.33333333333333, "KoPercent": 16.666666666666668};
+    var data = {"OkPercent": 81.951896976201, "KoPercent": 18.048103023799};
     var dataset = [
         {
             "label" : "FAIL",
@@ -173,7 +173,7 @@ $(document).ready(function() {
     });
 
     // Creates APDEX table
-    createTable($("#apdexTable"), {"supportsControllersDiscrimination": true, "overall": {"data": [5.28052805280528E-4, 500, 1500, "Total"], "isController": false}, "titles": ["Apdex", "T (Toleration threshold)", "F (Frustration threshold)", "Label"], "items": [{"data": [0.0, 500, 1500, "16 Get Stock Prices Request"], "isController": false}, {"data": [7.5E-4, 500, 1500, "14 Register Request"], "isController": false}, {"data": [0.0, 500, 1500, "17 Add Money Request"], "isController": false}, {"data": [1.0416666666666667E-4, 500, 1500, "15 Login Request"], "isController": false}]}, function(index, item){
+    createTable($("#apdexTable"), {"supportsControllersDiscrimination": true, "overall": {"data": [5.365822864718137E-4, 500, 1500, "Total"], "isController": false}, "titles": ["Apdex", "T (Toleration threshold)", "F (Frustration threshold)", "Label"], "items": [{"data": [0.0, 500, 1500, "16 Get Stock Prices Request"], "isController": false}, {"data": [8.5E-4, 500, 1500, "14 Register Request"], "isController": false}, {"data": [0.0, 500, 1500, "17 Add Money Request"], "isController": false}, {"data": [0.0, 500, 1500, "15 Login Request"], "isController": false}]}, function(index, item){
         switch(index){
             case 0:
                 item = item.toFixed(3);
@@ -187,7 +187,7 @@ $(document).ready(function() {
     }, [[0, 0]], 3);
 
     // Create statistics table
-    createTable($("#statisticsTable"), {"supportsControllersDiscrimination": true, "overall": {"data": ["Total", 15150, 2525, 16.666666666666668, 47142.63346534657, 637, 83276, 43214.0, 74475.0, 76468.45, 80748.0, 86.13044071496793, 59.58501956589406, 18.272416211141813], "isController": false}, "titles": ["Label", "#Samples", "FAIL", "Error %", "Average", "Min", "Max", "Median", "90th pct", "95th pct", "99th pct", "Transactions/s", "Received", "Sent"], "items": [{"data": ["16 Get Stock Prices Request", 347, 0, 0.0, 36916.54178674348, 10612, 61537, 33905.0, 53773.799999999996, 53930.0, 57878.52, 2.0859884098396133, 0.9879925573947387, 0.694650437261043], "isController": false}, {"data": ["14 Register Request", 10000, 2467, 24.67, 49616.885200000004, 637, 83276, 45889.5, 75566.8, 77340.84999999999, 81146.99, 68.54385435801825, 52.857077870530944, 13.549131967054397], "isController": false}, {"data": ["17 Add Money Request", 3, 0, 0.0, 49472.333333333336, 40592, 53991, 53834.0, 53991.0, 53991.0, 53991.0, 0.055564816358281935, 0.020131393426682225, 0.02061975607045619], "isController": false}, {"data": ["15 Login Request", 4800, 58, 1.2083333333333333, 42725.74749999998, 1360, 81597, 41344.0, 60773.500000000015, 66681.84999999999, 76526.84999999999, 27.566403445800432, 14.954224246231156, 6.435996949030868], "isController": false}]}, function(index, item){
+    createTable($("#statisticsTable"), {"supportsControllersDiscrimination": true, "overall": {"data": ["Total", 15841, 2859, 18.048103023799, 43604.47566441506, 676, 79410, 40475.0, 72551.0, 73971.4, 76059.16, 93.42415664071716, 66.97668321685539, 19.778667719022764], "isController": false}, "titles": ["Label", "#Samples", "FAIL", "Error %", "Average", "Min", "Max", "Median", "90th pct", "95th pct", "99th pct", "Transactions/s", "Received", "Sent"], "items": [{"data": ["16 Get Stock Prices Request", 948, 0, 0.0, 29442.224683544275, 11316, 57483, 28775.0, 35140.00000000001, 54983.8, 56629.71, 6.511436225015454, 3.0840298526684524, 2.1683591335256542], "isController": false}, {"data": ["14 Register Request", 10000, 2782, 27.82, 45917.861799999955, 676, 77074, 45073.5, 73611.7, 74826.84999999999, 76333.95, 70.8837789560237, 58.36181329124018, 13.425588479348011], "isController": false}, {"data": ["17 Add Money Request", 43, 0, 0.0, 22246.37209302325, 16728, 27740, 21951.0, 25683.8, 26068.4, 27740.0, 1.157781367797523, 0.4194696166532041, 0.429645429456112], "isController": false}, {"data": ["15 Login Request", 4850, 77, 1.5876288659793814, 41792.17690721644, 5459, 79410, 40504.5, 60794.10000000002, 63049.25, 71573.84, 28.88142537277881, 15.831381464452027, 6.717129606885094], "isController": false}]}, function(index, item){
         switch(index){
             // Errors pct
             case 3:
@@ -217,7 +217,7 @@ $(document).ready(function() {
     }, [[0, 0]], 0, summaryTableHeader);
 
     // Create error table
-    createTable($("#errorsTable"), {"supportsControllersDiscrimination": false, "titles": ["Type of error", "Number of errors", "% in errors", "% in all samples"], "items": [{"data": ["Non HTTP response code: org.apache.http.NoHttpResponseException/Non HTTP response message: localhost:8080 failed to respond", 2525, 100.0, 16.666666666666668], "isController": false}]}, function(index, item){
+    createTable($("#errorsTable"), {"supportsControllersDiscrimination": false, "titles": ["Type of error", "Number of errors", "% in errors", "% in all samples"], "items": [{"data": ["Non HTTP response code: org.apache.http.NoHttpResponseException/Non HTTP response message: localhost:8080 failed to respond", 2859, 100.0, 18.048103023799], "isController": false}]}, function(index, item){
         switch(index){
             case 2:
             case 3:
@@ -228,7 +228,7 @@ $(document).ready(function() {
     }, [[1, 1]]);
 
         // Create top5 errors by sampler
-    createTable($("#top5ErrorsBySamplerTable"), {"supportsControllersDiscrimination": false, "overall": {"data": ["Total", 15150, 2525, "Non HTTP response code: org.apache.http.NoHttpResponseException/Non HTTP response message: localhost:8080 failed to respond", 2525, "", "", "", "", "", "", "", ""], "isController": false}, "titles": ["Sample", "#Samples", "#Errors", "Error", "#Errors", "Error", "#Errors", "Error", "#Errors", "Error", "#Errors", "Error", "#Errors"], "items": [{"data": [], "isController": false}, {"data": ["14 Register Request", 10000, 2467, "Non HTTP response code: org.apache.http.NoHttpResponseException/Non HTTP response message: localhost:8080 failed to respond", 2467, "", "", "", "", "", "", "", ""], "isController": false}, {"data": [], "isController": false}, {"data": ["15 Login Request", 4800, 58, "Non HTTP response code: org.apache.http.NoHttpResponseException/Non HTTP response message: localhost:8080 failed to respond", 58, "", "", "", "", "", "", "", ""], "isController": false}]}, function(index, item){
+    createTable($("#top5ErrorsBySamplerTable"), {"supportsControllersDiscrimination": false, "overall": {"data": ["Total", 15841, 2859, "Non HTTP response code: org.apache.http.NoHttpResponseException/Non HTTP response message: localhost:8080 failed to respond", 2859, "", "", "", "", "", "", "", ""], "isController": false}, "titles": ["Sample", "#Samples", "#Errors", "Error", "#Errors", "Error", "#Errors", "Error", "#Errors", "Error", "#Errors", "Error", "#Errors"], "items": [{"data": [], "isController": false}, {"data": ["14 Register Request", 10000, 2782, "Non HTTP response code: org.apache.http.NoHttpResponseException/Non HTTP response message: localhost:8080 failed to respond", 2782, "", "", "", "", "", "", "", ""], "isController": false}, {"data": [], "isController": false}, {"data": ["15 Login Request", 4850, 77, "Non HTTP response code: org.apache.http.NoHttpResponseException/Non HTTP response message: localhost:8080 failed to respond", 77, "", "", "", "", "", "", "", ""], "isController": false}]}, function(index, item){
         return item;
     }, [[0, 0]], 0);
 
