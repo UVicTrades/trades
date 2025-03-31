@@ -5,12 +5,9 @@ import io.jsonwebtoken.security.Keys
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.config.web.server.ServerHttpSecurity
-import org.springframework.security.crypto.argon2.Argon2PasswordEncoder
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.NoOpPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.server.SecurityWebFilterChain
 import org.springframework.stereotype.Component
 import java.time.Instant
 import java.util.*
@@ -50,7 +47,7 @@ class SecurityConfiguration {
 
     @Bean
     fun passwordEncoder(): PasswordEncoder {
-        return BCryptPasswordEncoder()
+        return NoOpPasswordEncoder.getInstance()
     }
 
     @Bean
