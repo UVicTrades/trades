@@ -52,8 +52,6 @@ services:
     container_name: trade_database
     restart: unless-stopped
     depends_on: []
-    volumes:
-      - ./apps/data/database/postgres_data:/var/lib/postgresql/data
     ports: [5432:5432]
     environment:
       - POSTGRES_USER=trade
